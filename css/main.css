@@ -617,6 +617,13 @@ details[open] summary::after {
     flex-shrink: 0;
 }
 
+/* Skills Grid - About Page */
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
 /* Footer */
 .footer {
     margin-top: 4rem;
@@ -629,7 +636,17 @@ details[open] summary::after {
 }
 
 /* Responsive */
+@media (max-width: 1024px) {
+    .skills-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 @media (max-width: 768px) {
+    .skills-grid {
+        grid-template-columns: 1fr;
+    }
+
     .navbar {
         top: 0;
         margin-bottom: 2rem;
