@@ -43,65 +43,76 @@
 
             <h1 class="hero-title" style="font-size: 2.5rem; text-align: left;">Urja Setu</h1>
             <p class="hero-role" style="text-align: left; margin-bottom: 3rem;">
-                Bridging the Gap in Energy Distribution
+                AI-Driven Power Utility Feedback System
             </p>
 
             <div class="card" style="margin-bottom: 2rem; border-left: 4px solid var(--color-accent);">
                 <h3 style="margin-bottom: 0.5rem;">Problem Context</h3>
                 <p class="text-secondary">
-                    Inefficiencies in last-mile energy distribution often lead to power theft, unmonitored consumption,
-                    and grid instability in developing regions.
+                    Citizens reporting electrical hazards — broken poles, sparking transformers — rely on outdated,
+                    manual processes. Traditional systems lack urgency detection and geographic precision, leading to
+                    delayed response and unresolved safety risks.
                 </p>
             </div>
 
             <div style="margin-bottom: 2rem;">
-                <h3>Why Existing Solutions Were Insufficient</h3>
+                <h3>The Solution: Headless Architecture</h3>
                 <p class="text-secondary" style="margin-bottom: 1rem;">
-                    Centralized grids lack the agility to address localized faults quickly. Consumer-side transparency
-                    is also often missing, leading to disputes and mistrust.
+                    Urja Setu modernizes how citizens report electrical hazards in Gujarat. Instead of a monolithic app,
+                    we built a decoupled, headless architecture with three distinct layers:
                 </p>
-            </div>
-
-            <div style="margin-bottom: 2rem;">
-                <h3>Constraints</h3>
                 <ul class="text-secondary" style="list-style: disc; padding-left: 1.5rem;">
-                    <li><strong>Scalability:</strong> System must handle thousands of concurrent nodes.</li>
-                    <li><strong>User Interface:</strong> Must be accessible to non-technical staff.</li>
+                    <li><strong>Citizen App:</strong> A lightweight, mobile-first web interface for quick hazard
+                        reporting with image uploads.</li>
+                    <li><strong>Technician Dashboard:</strong> A separate portal for ground staff to view assignments,
+                        map locations, and manage tickets.</li>
+                    <li><strong>Intelligent Backend:</strong> A Django REST API that processes uploaded images using
+                        YOLOv8 to identify the asset (e.g., "Transformer") and auto-prioritize tickets by severity.</li>
                 </ul>
             </div>
 
             <div style="margin-bottom: 2rem;">
-                <h3>System Architecture</h3>
+                <h3>AI Integration</h3>
                 <p class="text-secondary">
-                    Urja Setu provides a dashboard for both consumers and providers. It aggregates data from smart
-                    meters and predicts demand spikes using historical data analysis.
+                    The system uses <strong>YOLOv8</strong> (Object Detection & Classification) to analyze
+                    citizen-uploaded images. When a report is submitted, the backend automatically triggers an analysis
+                    task that identifies the type of electrical asset, detects visible damage, and assigns a severity
+                    priority to the ticket — all without manual intervention.
                 </p>
             </div>
 
             <div style="margin-bottom: 2rem;">
                 <h3>Tech Stack</h3>
                 <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <span class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.25rem 0.75rem;">Django REST
+                        Framework</span>
+                    <span class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.25rem 0.75rem;">YOLOv8</span>
+                    <span class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.25rem 0.75rem;">JavaScript
+                        (Vanilla)</span>
+                    <span class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.25rem 0.75rem;">SQLite /
+                        PostgreSQL</span>
                     <span class="btn btn-secondary"
-                        style="font-size: 0.85rem; padding: 0.25rem 0.75rem;">React.js</span>
-                    <span class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.25rem 0.75rem;">Node.js</span>
-                    <span class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.25rem 0.75rem;">MongoDB</span>
-                    <span class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.25rem 0.75rem;">Express</span>
+                        style="font-size: 0.85rem; padding: 0.25rem 0.75rem;">OpenStreetMap</span>
                 </div>
             </div>
 
             <div style="margin-bottom: 2rem;">
                 <h3>Validation & Results</h3>
                 <p class="text-secondary">
-                    Tested with synthetic data simulating a town of 5,000 households. The system successfully identified
-                    simulated load imbalances 30% faster than traditional periodic reporting.
+                    <strong>SSIP Vikas Saptah Hackathon 2025 (6th Edition)</strong> — Selected as a <strong>State Level
+                        Finalist</strong>, ranking in the <strong>Top 50 teams out of 4,000+ entries</strong> across
+                    Gujarat. The platform was built to address a real-world governance challenge in public power utility
+                    feedback.
                 </p>
             </div>
 
             <div style="margin-bottom: 4rem;">
                 <h3>Outcome & Learnings</h3>
                 <p class="text-secondary">
-                    This project highlighted the importance of clean data pipelines and responsive frontend design in
-                    utility management software.
+                    Urja Setu demonstrated that decoupled architectures paired with Computer Vision can transform
+                    traditional civic processes. The project highlighted the importance of clean API design, real-time
+                    geocoding with OpenStreetMap, and the practical deployment challenges of AI models in
+                    resource-constrained environments.
                 </p>
             </div>
 

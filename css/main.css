@@ -540,6 +540,41 @@ details[open] summary::after {
     margin-bottom: 0.25rem;
 }
 
+/* Card Icon Links (GitHub, Lab Report etc.) */
+.card-icons {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    display: flex;
+    gap: 0.6rem;
+    z-index: 2;
+}
+
+.card-icon-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: var(--radius-sm);
+    color: var(--color-text-tertiary);
+    transition: all 0.2s ease;
+    background: var(--color-bg-section);
+    border: 1px solid var(--color-border);
+}
+
+.card-icon-link:hover {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+    transform: scale(1.1);
+}
+
+.card-icon-link svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+}
+
 /* Footer */
 .footer {
     margin-top: 4rem;

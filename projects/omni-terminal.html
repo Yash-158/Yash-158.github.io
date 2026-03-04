@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Omni-Terminal | Project Case Study</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="../index.html" class="logo">Yash Shah.</a>
+            <div class="menu-toggle">☰</div>
+            <ul class="nav-links">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="../projects.html" class="nav-link active">Projects</a></li>
+                <li><a href="../experience.html" class="nav-link">Experience</a></li>
+                <li><a href="../certifications.html" class="nav-link">Certifications</a></li>
+                <li><a href="../about.html" class="nav-link">About</a></li>
+                <li><a href="../contact.html" class="nav-link">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Project Content -->
+    <section>
+        <div class="container" style="max-width: 800px;">
+            <a href="../projects.html" class="btn-link" style="margin-bottom: 2rem; display: inline-block;">&larr; Back
+                to Projects</a>
+
+            <h1 class="hero-title" style="font-size: 2.5rem; text-align: left;">The Omni-Terminal</h1>
+            <p class="hero-role" style="text-align: left; margin-bottom: 3rem;">
+                Raspberry Pi 5 Desktop Hub &bull; Smart Home &bull; Media Station
+            </p>
+
+            <div class="card" style="margin-bottom: 2rem; border-left: 4px solid var(--color-accent);">
+                <h3 style="margin-bottom: 0.5rem;">The Vision</h3>
+                <p class="text-secondary">
+                    Why settle for a static monitor when you can build a living, breathing command center? The
+                    Omni-Terminal is a "J.A.R.V.I.S.-like" desktop companion — always on, always ready — encapsulating
+                    the raw power of a Raspberry Pi 5 (8GB) into a sleek, custom-engineered enclosure.
+                </p>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <h3>Key Capabilities</h3>
+                <ul class="text-secondary" style="list-style: disc; padding-left: 1.5rem;">
+                    <li><strong>Smart Hub:</strong> Centralized control for smart lights, plugs, and sensors via
+                        touchscreen.</li>
+                    <li><strong>Media Station:</strong> Dedicated Spotify controller with deep media integration —
+                        browse
+                        playlists, skip tracks, adjust volume.</li>
+                    <li><strong>Info Deck:</strong> Always-on dashboard displaying time, weather, calendar events, and
+                        system stats.</li>
+                    <li><strong>Dual-Purpose Display:</strong> The 7-inch capacitive touchscreen doubles as a secondary
+                        monitor for your main PC.</li>
+                </ul>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <h3>Custom Engineering</h3>
+                <p class="text-secondary" style="margin-bottom: 1rem;">
+                    The enclosure was designed from scratch with <strong>5 major design iterations</strong> to achieve
+                    the perfect balance of aesthetics and functionality. It features precision fit for the Pi 5 and
+                    official 7-inch touchscreen, active cooling with a dedicated airflow housing, and modular assembly
+                    for easy GPIO and port access.
+                </p>
+                <p class="text-secondary">
+                    All original 3D design files (<code
+                        style="font-family: var(--font-mono); background: var(--color-bg-section); padding: 0.1rem 0.4rem; border-radius: var(--radius-sm); border: 1px solid var(--color-border);">.STEP</code>
+                    format) are included in the repository — open source hardware, ready to print and modify.
+                </p>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <h3>Tech Stack</h3>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <span class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.25rem 0.75rem;">Raspberry Pi
+                        5</span>
+                    <span class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.25rem 0.75rem;">Python
+                        3.11+</span>
+                    <span class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.25rem 0.75rem;">IoT</span>
+                    <span class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.25rem 0.75rem;">3D Printing
+                        (STEP)</span>
+                    <span class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.25rem 0.75rem;">Raspberry Pi
+                        OS</span>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <h3>Hardware</h3>
+                <ul class="text-secondary" style="list-style: disc; padding-left: 1.5rem;">
+                    <li>Raspberry Pi 5 (8GB RAM)</li>
+                    <li>Official 7-inch Touchscreen Display</li>
+                    <li>Raspberry Pi Active Cooler</li>
+                    <li>Custom 3D-Printed Enclosure (5 design iterations)</li>
+                    <li>27W USB-C Power Supply</li>
+                </ul>
+            </div>
+
+            <div style="margin-bottom: 4rem;">
+                <h3>Future Roadmap</h3>
+                <ul class="text-secondary" style="list-style: disc; padding-left: 1.5rem;">
+                    <li><strong>Voice Assistant:</strong> Integration with local LLMs for offline voice control.</li>
+                    <li><strong>Home Assistant Bridge:</strong> Two-way sync with Home Assistant instances.</li>
+                    <li><strong>Vision:</strong> Integrated camera for gesture control and presence detection.</li>
+                </ul>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Yash Shah. Built with pure HTML/CSS/JS.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../js/main.js"></script>
+</body>
+
+</html>

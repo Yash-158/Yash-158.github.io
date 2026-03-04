@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkyShare | Project Case Study</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="../index.html" class="logo">Yash Shah.</a>
+            <div class="menu-toggle">☰</div>
+            <ul class="nav-links">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="../projects.html" class="nav-link active">Projects</a></li>
+                <li><a href="../experience.html" class="nav-link">Experience</a></li>
+                <li><a href="../certifications.html" class="nav-link">Certifications</a></li>
+                <li><a href="../about.html" class="nav-link">About</a></li>
+                <li><a href="../contact.html" class="nav-link">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Project Content -->
+    <section>
+        <div class="container" style="max-width: 800px;">
+            <a href="../projects.html" class="btn-link" style="margin-bottom: 2rem; display: inline-block;">&larr; Back
+                to Projects</a>
+
+            <h1 class="hero-title" style="font-size: 2.5rem; text-align: left;">SkyShare</h1>
+            <p class="hero-role" style="text-align: left; margin-bottom: 3rem;">
+                Share Files Instantly, Securely, and Without Friction
+            </p>
+
+            <div class="card" style="margin-bottom: 2rem; border-left: 4px solid var(--color-accent);">
+                <h3 style="margin-bottom: 0.5rem;">Problem Context</h3>
+                <p class="text-secondary">
+                    Traditional file-sharing methods require accounts, complex permissions, or produce long ugly URLs.
+                    There was a need for an instant, anonymous, and ephemeral way to move data without friction.
+                </p>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <h3>Why Existing Solutions Were Insufficient</h3>
+                <p class="text-secondary" style="margin-bottom: 1rem;">
+                    Most platforms demand user registration, enforce data retention policies that leave files lingering
+                    online, or generate unwieldy download links that are hard to share verbally.
+                </p>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <h3>Key Features</h3>
+                <ul class="text-secondary" style="list-style: disc; padding-left: 1.5rem;">
+                    <li><strong>Anonymous Sharing:</strong> Upload files instantly without creating an account.</li>
+                    <li><strong>6-Digit Secure Codes:</strong> Every upload generates a unique, short 6-digit code for
+                        easy sharing.</li>
+                    <li><strong>Automatic Expiration:</strong> Files are automatically deleted after 7 days.</li>
+                    <li><strong>Responsive UI:</strong> Clean, modern interface that works on desktop and mobile.</li>
+                    <li><strong>Real-time Progress:</strong> Visual upload progress bars for a seamless experience.</li>
+                    <li><strong>Secure Downloads:</strong> Force-download headers ensure files are saved correctly.</li>
+                </ul>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <h3>Technical Deep Dive</h3>
+                <p class="text-secondary" style="margin-bottom: 1rem;">
+                    At the heart of SkyShare is the <code
+                        style="font-family: var(--font-mono); background: var(--color-bg-section); padding: 0.1rem 0.4rem; border-radius: var(--radius-sm); border: 1px solid var(--color-border);">FileTransfer</code>
+                    model. Instead of long URLs, a custom save method generates a unique 6-digit numerical code for
+                    every file — ensuring collision-free, easy-to-share access like <code
+                        style="font-family: var(--font-mono); background: var(--color-bg-section); padding: 0.1rem 0.4rem; border-radius: var(--radius-sm); border: 1px solid var(--color-border);">123456</code>.
+                </p>
+                <p class="text-secondary">
+                    Security and storage management are automated through an <code
+                        style="font-family: var(--font-mono); background: var(--color-bg-section); padding: 0.1rem 0.4rem; border-radius: var(--radius-sm); border: 1px solid var(--color-border);">expires_at</code>
+                    timestamp assigned upon creation (defaulting to 7 days). The <code
+                        style="font-family: var(--font-mono); background: var(--color-bg-section); padding: 0.1rem 0.4rem; border-radius: var(--radius-sm); border: 1px solid var(--color-border);">is_expired()</code>
+                    method checks against server time to prevent access to stale files.
+                </p>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <h3>Tech Stack</h3>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <span class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.25rem 0.75rem;">Python</span>
+                    <span class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.25rem 0.75rem;">Django
+                        5.1</span>
+                    <span class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.25rem 0.75rem;">SQLite</span>
+                    <span class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.25rem 0.75rem;">HTML5 /
+                        CSS3</span>
+                    <span class="btn btn-secondary"
+                        style="font-size: 0.85rem; padding: 0.25rem 0.75rem;">JavaScript</span>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 4rem;">
+                <h3>Outcome & Learnings</h3>
+                <p class="text-secondary">
+                    SkyShare demonstrates that file sharing doesn't need to be complex. By combining Django's robustness
+                    with a glassmorphism-inspired, mobile-first UI, the platform provides an instant, zero-friction
+                    experience. The 6-digit code system proves that simplicity and security can coexist.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Yash Shah. Built with pure HTML/CSS/JS.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../js/main.js"></script>
+</body>
+
+</html>
