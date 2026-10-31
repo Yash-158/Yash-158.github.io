@@ -1,0 +1,94 @@
+---
+// One shared image viewer for the whole site. Any link with data-lightbox="<group>"
+// opens here, and links in the same group become one set you can step through.
+// Arrow keys and swiping move between images, Esc closes, and focus stays inside
+// while it is open (showModal makes the rest of the page inert).
+// Without JavaScript the links simply open the image.
+import Icon from "./Icon.astro";
+---
+<dialog class="lightbox" aria-label="Image viewer">
+  <div class="lightbox__bar">
+    <p class="lightbox__count" aria-live="polite"></p>
+    <a class="lightbox__open" href="#" target="_blank" rel="noopener">Open full size<Icon name="expand" size={16} /></a>
+    <button type="button" class="lightbox__btn lightbox__close" aria-label="Close"><Icon name="close" size={22} /></button>
+  </div>
+  <figure class="lightbox__figure">
+    <img class="lightbox__img" src="data:," alt="Enlarged image" />
+    <figcaption class="lightbox__caption"></figcaption>
+  </figure>
+  <button type="button" class="lightbox__btn lightbox__prev" aria-label="Previous image"><Icon name="left" size={22} /></button>
+  <button type="button" class="lightbox__btn lightbox__next" aria-label="Next image"><Icon name="right" size={22} /></button>
+</dialog>
+
+<script>
+  const box = document.querySelector<HTMLDialogElement>(".lightbox");
+  if (box && typeof box.showModal === "function") {
+    const img = box.querySelector<HTMLImageElement>(".lightbox__img")!;
+    const cap = box.querySelector<HTMLElement>(".lightbox__caption")!;
+    const count = box.querySelector<HTMLElement>(".lightbox__count")!;
+    const open = box.querySelector<HTMLAnchorElement>(".lightbox__open")!;
+    const prev = box.querySelector<HTMLButtonElement>(".lightbox__prev")!;
+    const next = box.querySelector<HTMLButtonElement>(".lightbox__next")!;
+    let set: HTMLAnchorElement[] = [];
+    let at = 0;
+    let opener: HTMLElement | null = null;
+
+    const show = (i: number) => {
+      at = (i + set.length) % set.length;
+      const a = set[at];
+      const pic = a.querySelector("img");
+      img.src = a.href;
+      img.alt = pic?.alt || "";
+      cap.textContent = a.dataset.caption || pic?.alt || "";
+      open.href = a.dataset.full || a.href;
+      count.textContent = set.length > 1 ? `${at + 1} of ${set.length}` : "";
+      prev.hidden = next.hidden = set.length < 2;
+    };
+
+    document.addEventListener("click", (e) => {
+      const a = (e.target as Element).closest<HTMLAnchorElement>("a[data-lightbox]");
+      if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+      e.preventDefault();
+      const group = a.dataset.lightbox;
+      // Links in the same group, without counting the same picture twice
+      const seen = new Set<string>();
+      set = Array.from(document.querySelectorAll<HTMLAnchorElement>(`a[data-lightbox="${group}"]`)).filter((el) => {
+        if (seen.has(el.href)) return false;
+        seen.add(el.href);
+        return true;
+      });
+      opener = a;
+      show(Math.max(0, set.findIndex((el) => el.href === a.href)));
+      box.showModal();
+      box.querySelector<HTMLButtonElement>(".lightbox__close")!.focus();
+    });
+
+    prev.addEventListener("click", () => show(at - 1));
+    next.addEventListener("click", () => show(at + 1));
+    box.querySelector(".lightbox__close")!.addEventListener("click", () => box.close());
+    box.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") { e.preventDefault(); show(at - 1); }
+      if (e.key === "ArrowRight") { e.preventDefault(); show(at + 1); }
+      // Tab and Shift+Tab loop through the controls, so focus never leaves the viewer
+      if (e.key === "Tab") {
+        const items = Array.from(box.querySelectorAll<HTMLElement>("a[href], button:not([hidden])")).filter((el) => el.offsetParent !== null);
+        const first = items[0], last = items[items.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    });
+    // A click on the dark backdrop closes it
+    box.addEventListener("click", (e) => { if (e.target === box) box.close(); });
+    box.addEventListener("close", () => { img.src = "data:,"; opener?.focus(); });
+
+    // Swipe left or right on touch screens
+    let x0: number | null = null;
+    box.addEventListener("pointerdown", (e) => { if (e.pointerType !== "mouse") x0 = e.clientX; });
+    box.addEventListener("pointerup", (e) => {
+      if (x0 === null) return;
+      const dx = e.clientX - x0;
+      x0 = null;
+      if (Math.abs(dx) > 50 && set.length > 1) show(at + (dx < 0 ? 1 : -1));
+    });
+  }
+</script>

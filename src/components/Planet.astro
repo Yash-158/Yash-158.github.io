@@ -1,0 +1,52 @@
+---
+// The hero background for "From Mars to the shoreline": a soft blue planet with
+// a fine grain, two thin orbit rings and two small moons that drift along them.
+// The moons move with CSS only and stand still when reduced motion is on.
+---
+<div class="planet" aria-hidden="true">
+  <svg class="planet__body" viewBox="0 0 600 600">
+    <defs>
+      <radialGradient id="planet-fill" cx="36%" cy="30%" r="74%">
+        <stop offset="0" stop-color="#C9D7FF" />
+        <stop offset="0.38" stop-color="#7F9BFF" />
+        <stop offset="0.72" stop-color="#2457FF" />
+        <stop offset="1" stop-color="#1A3FC4" />
+      </radialGradient>
+      <radialGradient id="planet-shade" cx="70%" cy="78%" r="62%">
+        <stop offset="0" stop-color="#0E1533" stop-opacity="0.32" />
+        <stop offset="1" stop-color="#0E1533" stop-opacity="0" />
+      </radialGradient>
+      <filter id="planet-grain" x="0" y="0" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="7" stitchTiles="stitch" />
+        <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 -1.6 1.05" />
+      </filter>
+      <clipPath id="planet-clip"><circle cx="300" cy="300" r="236" /></clipPath>
+    </defs>
+    <circle cx="300" cy="300" r="236" fill="url(#planet-fill)" />
+    <g clip-path="url(#planet-clip)">
+      <rect width="600" height="600" filter="url(#planet-grain)" opacity="0.28" />
+      <circle cx="300" cy="300" r="236" fill="url(#planet-shade)" />
+      <!-- soft bands, like weather on a far planet -->
+      <path d="M20 250C150 225 420 228 600 262" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="18" fill="none" />
+      <path d="M20 360C180 338 410 345 600 372" stroke="#FFFFFF" stroke-opacity="0.1" stroke-width="30" fill="none" />
+    </g>
+  </svg>
+  <svg class="planet__orbits" viewBox="0 0 600 600">
+    <ellipse class="orbit orbit--a" cx="300" cy="300" rx="296" ry="78" transform="rotate(-16 300 300)" />
+    <ellipse class="orbit orbit--b" cx="300" cy="300" rx="262" ry="122" transform="rotate(14 300 300)" />
+    <!-- Moving moons. The paths trace the same two ellipses as the rings. -->
+    <g class="moons moons--moving">
+      <circle r="7" class="moon moon--a">
+        <animateMotion dur="56s" repeatCount="indefinite" path="M584.5 218.4A296 78 -16 1 1 15.5 381.6A296 78 -16 1 1 584.5 218.4" />
+      </circle>
+      <circle r="5" class="moon moon--b">
+        <animateMotion dur="80s" begin="-30s" repeatCount="indefinite" path="M554.2 363.4A262 122 14 1 1 45.8 236.6A262 122 14 1 1 554.2 363.4" />
+      </circle>
+    </g>
+    <!-- The same moons standing still, shown instead when reduced motion is on. -->
+    <g class="moons moons--still">
+      <circle r="7" class="moon moon--a" cx="560" cy="264" />
+      <circle r="5" class="moon moon--b" cx="50" cy="280" />
+    </g>
+  </svg>
+</div>

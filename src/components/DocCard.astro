@@ -1,0 +1,36 @@
+---
+// One card for a document from src/data/documents.js: thumbnail, type, title,
+// issuer and date, a one-line description and a "View" link to its own page.
+import Icon from "./Icon.astro";
+import { documentTypes } from "../data/documents.js";
+
+interface Props {
+  doc: any;
+  headingLevel?: "h3" | "h4";
+}
+const { doc, headingLevel = "h3" } = Astro.props;
+const H = headingLevel;
+const typeLabel = documentTypes.find((t) => t.id === doc.type)?.one ?? "";
+// The first sentence of the description is the one-line summary.
+const line = doc.description.match(/^.*?[.!?](?=\s|$)/)?.[0] ?? doc.description;
+---
+<li class="doc-card" data-type={doc.type}>
+  <a class="doc-card__thumb" href={doc.url} tabindex="-1" aria-hidden="true">
+    <img
+      src={doc.thumb}
+      srcset={`${doc.thumbSmall} 480w, ${doc.thumb} 960w`}
+      sizes="(min-width: 1000px) 30vw, (min-width: 640px) 46vw, 92vw"
+      alt=""
+      aria-hidden="true"
+      loading="lazy"
+      decoding="async"
+    />
+  </a>
+  <div class="doc-card__body">
+    <span class="doc-card__type">{typeLabel}</span>
+    <H class="doc-card__title"><a href={doc.url}>{doc.shortTitle}</a></H>
+    <p class="doc-card__meta">{doc.issuer}{doc.when && <>, {doc.when}</>}</p>
+    <p class="doc-card__line">{line}</p>
+    <a class="text-link doc-card__view" href={doc.url}>View<Icon name="right" size={15} stroke={2.2} /><span class="visually-hidden">: {doc.shortTitle}</span></a>
+  </div>
+</li>

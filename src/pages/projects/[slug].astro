@@ -1,0 +1,206 @@
+---
+import Base from "../../layouts/Base.astro";
+import Icon from "../../components/Icon.astro";
+import Metric from "../../components/Metric.astro";
+import GrainField from "../../components/GrainField.astro";
+import Gallery from "../../components/Gallery.astro";
+import DocCard from "../../components/DocCard.astro";
+import { projects } from "../../data/site.js";
+import { docsFor } from "../../data/documents.js";
+
+export function getStaticPaths() {
+  const pages = projects.filter((p) => p.sections);
+  return pages.map((project, i) => ({
+    params: { slug: project.slug },
+    props: { project, index: i, next: pages[(i + 1) % pages.length] },
+  }));
+}
+
+const { project: p, index, next } = Astro.props;
+const number = String(index + 1).padStart(2, "0");
+const title = `${p.name} | Yash Shah`;
+const description = `${p.name}. ${p.lead}`;
+let n = 0;
+const eyebrow = (text) => `${String(++n).padStart(2, "0")}, ${text}`;
+const hero = p.hero || { kind: "metric" };
+const firstLink = (p.links || [])[0];
+const howId = (p.sections.find((s) => s.kind === "steps") || {}).kind ? "how" : null;
+
+// Documents linked to this project in documents.js: certificates, press and photos.
+const linkedDocs = docsFor.project(p.slug);
+const docCards = linkedDocs.filter((d) => !d.photo);
+// One gallery per project: the screenshots from site.js, then the photos and press clippings
+// from documents.js. The hero picture opens in the same viewer but is not repeated.
+const firstLine = (t) => t.match(/^.*?[.!?](?=\s|$)/)?.[0] ?? t;
+const galleryImages = [
+  ...p.sections.filter((s) => s.kind === "gallery").flatMap((s) => s.images),
+  ...[...linkedDocs.filter((d) => d.photo), ...linkedDocs.filter((d) => d.type === "press")].map((d) => ({ src: d.image, thumb: d.thumb, alt: d.alt, caption: firstLine(d.description), doc: d.url })),
+].filter((im, i, all) => all.findIndex((x) => x.src === im.src) === i && im.src !== hero.src);
+const gallerySection = p.sections.find((s) => s.kind === "gallery") || { eyebrow: "Photos", title: "From the event." };
+const galleryPortrait = !!gallerySection.portrait;
+let galleryShown = false;
+---
+<Base title={title} description={description} current="Work">
+  <section class="project-hero" aria-labelledby="project-title">
+    <div class="project-hero__copy">
+      <a class="back-link" href="/#work"><Icon name="left" size={16} />All projects</a>
+      <p class="eyebrow">Project {number}, {p.category}</p>
+      <h1 id="project-title">{p.name}.</h1>
+      <p class="project-hero__lead">{p.lead}</p>
+      <div class="project-hero__actions">
+        {firstLink && (
+          <a class="btn btn--blue" href={firstLink.href} target="_blank" rel="noopener">{firstLink.label}<Icon name="arrow" size={15} stroke={2.2} /></a>
+        )}
+        {howId && <a class={`btn ${firstLink ? "btn--line" : "btn--blue"}`} href="#how">How it works</a>}
+      </div>
+    </div>
+
+    <div class={`project-hero__art${hero.kind === "metric" ? " project-hero__art--metric" : ""}`}>
+      {hero.kind === "metric" ? (
+        <Metric metric={p.metric} />
+      ) : (
+        <>
+          <img class="cloud" src="/images/grain.webp" alt="" aria-hidden="true" width="720" height="720" />
+          <figure class={`shot${hero.portrait ? " shot--portrait" : ""}${hero.small ? " shot--small" : ""}`}>
+            {hero.kind === "grains" ? <GrainField /> : <a href={hero.src} data-lightbox="project" data-caption={hero.caption}><img src={hero.src} alt={hero.alt} loading="eager" decoding="async" /></a>}
+            <figcaption><span>{hero.caption}</span>{hero.note && <span>{hero.note}</span>}</figcaption>
+          </figure>
+        </>
+      )}
+      {p.heroStickers && hero.kind !== "metric" && (
+        <>
+          <p class="sticker sticker--stat"><strong>{p.heroStickers.stat[0]}</strong><span>{p.heroStickers.stat[1]}</span></p>
+          <p class="sticker sticker--award badge-card badge-card--white">
+            <Icon name="trophy" size={30} stroke={1.7} color="var(--accent)" />
+            <span><strong>{p.heroStickers.award[0]}</strong><span>{p.heroStickers.award[1]}</span></span>
+          </p>
+        </>
+      )}
+    </div>
+  </section>
+
+  {p.facts && (
+    <div class="facts-band band">
+      <dl class="facts grid-lines">
+        {p.facts.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
+      </dl>
+    </div>
+  )}
+
+  {p.sections.map((s) => {
+    if (s.kind === "text") return (
+      <section class="block split">
+        <div class="split__head"><p class="eyebrow">{eyebrow(s.eyebrow)}</p><h2 class="h-sub">{s.title}</h2></div>
+        <div class="split__body">{s.paras.map((t) => <p>{t}</p>)}</div>
+      </section>
+    );
+    if (s.kind === "cards") return (
+      <section class="block">
+        <div class="split">
+          <div class="split__head"><p class="eyebrow">{eyebrow(s.eyebrow)}</p><h2 class="h-sub">{s.title}</h2></div>
+          {s.intro && <p class="split__body">{s.intro}</p>}
+        </div>
+        <div class="feature-grid">
+          {s.cards.map((c, i) => (
+            <article class={`feature tone-${["blue", "periwinkle", "lavender", "periwinkle"][i % 4]}`}>
+              <Icon name={c.icon} size={44} stroke={1.8} class="ico" />
+              <h3>{c.title}</h3>
+              <p class="feature__text">{c.text}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+    );
+    if (s.kind === "steps") return (
+      <section class="steps-section band" id="how">
+        <div class="steps-head"><p class="eyebrow">{eyebrow(s.eyebrow)}</p><h2 class="h-sub">{s.title}</h2></div>
+        <ol class="steps grid-lines">
+          {s.steps.map((st, i) => (
+            <li><span class="steps__n" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span><h3>{st.title}</h3><p>{st.text}</p></li>
+          ))}
+        </ol>
+      </section>
+    );
+    if (s.kind === "results") return (
+      <section class="results">
+        <p class="eyebrow">{eyebrow(s.eyebrow)}</p>
+        <h2 class="h-sub">{s.title}</h2>
+        <div class="results__grid">
+          {s.items.map((r) => (
+            <div class={`result result--${r.style}`}>
+              {r.value && <span class="result__value">{r.value}</span>}
+              <p>{r.text}</p>
+              {r.link && (
+                <a class="circle-link" href={r.link.href} target="_blank" rel="noopener"><span class="circle-link__dot"><Icon name="arrow" size={17} /></span>{r.link.label}</a>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+    if (s.kind === "list") return (
+      <section class="block split">
+        <div class="split__head"><p class="eyebrow">{eyebrow(s.eyebrow)}</p><h2 class="h-sub">{s.title}</h2></div>
+        <ul class="split__body ticks">
+          {s.items.map(([a, b]) => (
+            <li><Icon name="sparkle" size={18} color="var(--accent)" /><span><strong>{a}</strong> <span class="light">{b}</span></span></li>
+          ))}
+        </ul>
+      </section>
+    );
+    if (s.kind === "gallery") {
+      if (galleryShown || galleryImages.length === 0) return null;
+      galleryShown = true;
+      return (
+        <section class="block">
+          <p class="eyebrow">{eyebrow(s.eyebrow)}</p>
+          <h2 class="h-sub" style="margin-top: 10px">{s.title}</h2>
+          <Gallery images={galleryImages} group="project" portrait={galleryPortrait} />
+        </section>
+      );
+    }
+    return null;
+  })}
+
+  {!galleryShown && galleryImages.length > 0 && (
+    <section class="block">
+      <p class="eyebrow">{eyebrow(gallerySection.eyebrow)}</p>
+      <h2 class="h-sub" style="margin-top: 10px">{gallerySection.title}</h2>
+      <Gallery images={galleryImages} group="project" />
+    </section>
+  )}
+
+  {docCards.length > 0 && (
+    <section class="block project-docs band" aria-labelledby="project-docs-title">
+      <p class="eyebrow">{eyebrow("Certificates and press")}</p>
+      <h2 class="h-sub" id="project-docs-title" style="margin-top: 10px">The paperwork behind it.</h2>
+      <ul class="doc-grid project-docs__grid">
+        {docCards.map((d) => <DocCard doc={d} />)}
+      </ul>
+    </section>
+  )}
+
+  <section class="stack-row" aria-label="Built with">
+    <p class="label">Built with</p>
+    <ul>{p.stack.map((t) => <li>{t}</li>)}</ul>
+  </section>
+
+  {(p.links || []).length > 1 && (
+    <section class="stack-row" aria-label="Links">
+      <p class="label">Links</p>
+      <div class="pill-row">{p.links.map((l) => <a class="pill" href={l.href} target="_blank" rel="noopener">{l.label}</a>)}</div>
+    </section>
+  )}
+
+  <a class="next" href={`/projects/${next.slug}`}>
+    <span>
+      <span class="label">Next project</span>
+      <span class="next__name">{next.name}.</span>
+      <span class="next__lead">{next.lead}</span>
+    </span>
+    <span class="next__go" aria-hidden="true">
+      <img src="/images/grain.webp" alt="" aria-hidden="true" width="720" height="720" loading="lazy" />
+      <span><Icon name="right" size={28} /></span>
+    </span>
+  </a>
+</Base>

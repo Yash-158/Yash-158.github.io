@@ -1,0 +1,39 @@
+---
+import Icon from "./Icon.astro";
+import { site, nav } from "../data/site.js";
+const year = new Date().getFullYear();
+const explore = nav.filter((n) => n.label !== "Contact");
+---
+<footer class="site-footer">
+  <div class="site-footer__grid">
+    <div>
+      <a class="wordmark" href="/">{site.name}</a>
+      <p class="site-footer__tag">{site.tagline}</p>
+      <p class="site-footer__loc">{site.location}</p>
+    </div>
+    <nav aria-labelledby="footer-explore">
+      <h2 id="footer-explore">Explore</h2>
+      <ul>
+        {explore.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+      </ul>
+    </nav>
+    <div>
+      <h2>Contact me</h2>
+      <ul>
+        <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+        <li><a href={site.linkedin} rel="me noopener" target="_blank">LinkedIn</a></li>
+        <li><a href={site.github} rel="me noopener" target="_blank">GitHub</a></li>
+        <li><a href={site.resume} target="_blank" rel="noopener">Resume (PDF)</a></li>
+      </ul>
+    </div>
+    <div>
+      <h2>Right now</h2>
+      <p class="site-footer__now">{site.availability}</p>
+      <a class="back-top" href="#top">Back to top<Icon name="up" size={14} stroke={2.2} /></a>
+    </div>
+  </div>
+  <div class="site-footer__base">
+    <span>© {year} {site.name}. All rights reserved.</span>
+    <span>Designed and built with care in Ahmedabad.</span>
+  </div>
+</footer>

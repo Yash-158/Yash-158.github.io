@@ -1,0 +1,153 @@
+---
+import "@fontsource/outfit/300.css";
+import "@fontsource/outfit/400.css";
+import "@fontsource/outfit/500.css";
+import "@fontsource/outfit/600.css";
+import "@fontsource/caveat/700.css";
+import "../styles/global.css";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import Lightbox from "../components/Lightbox.astro";
+import { site } from "../data/site.js";
+
+interface Props {
+  title?: string;
+  description?: string;
+  current?: string;
+  image?: string;
+  imageAlt?: string;
+  noindex?: boolean;
+  personSchema?: boolean;
+}
+const { title = site.title, description = site.description, current = "Home", image = "/og-image.jpg", imageAlt = "Yash Shah, AI/ML engineer and researcher", noindex = false, personSchema = false } = Astro.props;
+
+const pathname = Astro.url.pathname.replace(/\.html$/, "").replace(/\/index$/, "/");
+const canonical = new URL(pathname, site.url).href;
+const ogImage = new URL(image, site.url).href;
+
+const person = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: site.name,
+  url: site.url,
+  image: new URL("/images/yash-shah.webp", site.url).href,
+  jobTitle: "AI/ML Engineer and Researcher",
+  email: `mailto:${site.email}`,
+  address: { "@type": "PostalAddress", addressLocality: "Ahmedabad", addressCountry: "IN" },
+  alumniOf: { "@type": "CollegeOrUniversity", name: "GLS University" },
+  sameAs: [site.linkedin, site.github],
+};
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta name="theme-color" content="#2457FF" />
+    <meta name="author" content={site.name} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={imageAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    {personSchema && <script type="application/ld+json" set:html={JSON.stringify(person)} />}
+  </head>
+  <body>
+    <div class="bg-waves" aria-hidden="true"><span></span><span></span><span></span></div>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="frame" id="top">
+      <Header current={current} />
+      <main id="main">
+        <slot />
+      </main>
+      <Footer />
+    </div>
+    <Lightbox />
+  </body>
+</html>
+
+<script>
+  // Small touches of motion. All of it is optional: without JavaScript, or with
+  // reduced motion turned on, every section and number is shown as it is.
+  const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (!still && "IntersectionObserver" in window) {
+    // Fade sections up as they scroll into view. Only things that start below
+    // the first screen are hidden first, so nothing ever blinks on load.
+    const targets = document.querySelectorAll<HTMLElement>(
+      "main > section > .section-head, .services__head, .card-grid > *, .row, .third-paper, .more__title, .more-grid > li, .sih-card, .win-grid > li, .press-grid > li, .job, .certs__head, .doc-grid > li, .doc-hero, .pgallery, .details > div, .contact > h2, .split, .feature-grid > *, .steps-head, .steps > li, .results__grid > *, .results > .h-sub, .ticks > li, .gallery > figure, .stack-row, .next",
+    );
+    const show = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          const el = e.target as HTMLElement;
+          el.classList.add("is-in");
+          show.unobserve(el);
+          // Once it has arrived, hand the element back to its normal styles,
+          // so hover effects keep their own timing.
+          el.addEventListener("transitionend", () => { el.classList.remove("reveal", "is-in"); el.style.removeProperty("--delay"); }, { once: true });
+        }
+      },
+      { rootMargin: "0px 0px -8% 0px" },
+    );
+    const fold = window.innerHeight;
+    targets.forEach((el) => {
+      if (el.getBoundingClientRect().top < fold) return;
+      // Cards in the same row arrive one after another.
+      const parent = el.parentElement;
+      const i = parent && parent.children.length > 1 ? Array.prototype.indexOf.call(parent.children, el) % 4 : 0;
+      el.style.setProperty("--delay", `${i * 0.08}s`);
+      el.classList.add("reveal");
+      show.observe(el);
+    });
+
+    // Count the stats up once, the first time they appear.
+    const counters = document.querySelectorAll<HTMLElement>("[data-count]");
+    const count = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          count.unobserve(e.target);
+          const el = e.target as HTMLElement;
+          const final = el.dataset.count || "";
+          const target = Number(final.replace(/,/g, ""));
+          if (!Number.isFinite(target) || target <= 0) continue;
+          const width = final.replace(/,/g, "").length;
+          const commas = final.includes(",");
+          const start = performance.now();
+          const ms = 1400;
+          const tick = (now: number) => {
+            const t = Math.min(1, (now - start) / ms);
+            const eased = 1 - Math.pow(1 - t, 3);
+            const n = Math.round(target * eased);
+            el.textContent = commas ? n.toLocaleString("en-US") : String(n).padStart(width, "0");
+            if (t < 1) requestAnimationFrame(tick);
+            else el.textContent = final;
+          };
+          requestAnimationFrame(tick);
+        }
+      },
+      { threshold: 0.6 },
+    );
+    counters.forEach((el) => count.observe(el));
+  }
+</script>

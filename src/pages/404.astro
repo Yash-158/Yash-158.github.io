@@ -1,0 +1,17 @@
+---
+import Base from "../layouts/Base.astro";
+import Icon from "../components/Icon.astro";
+---
+<Base title="Page not found | Yash Shah" description="This page does not exist." current="" noindex>
+  <section class="notfound">
+    <img class="cloud" src="/images/grain.webp" alt="" aria-hidden="true" width="720" height="720" />
+    <div style="position: relative">
+      <h1>404</h1>
+      <p>This page does not exist. It may have moved when the site was rebuilt.</p>
+      <div class="hero__actions">
+        <a class="btn btn--blue" href="/">Go to the home page<Icon name="arrow" size={15} stroke={2.2} /></a>
+        <a class="btn btn--line" href="/#work">See my work</a>
+      </div>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,14 @@
+---
+// The tilted number card that floats on a soft blue grain cloud.
+interface Props {
+  metric: { tone: string; tilt: number; eyebrow: string; value: string; caption: string };
+  cloud?: boolean;
+}
+const { metric, cloud = true } = Astro.props;
+---
+{cloud && <img class="cloud" src="/images/grain.webp" alt="" aria-hidden="true" width="720" height="720" loading="lazy" decoding="async" />}
+<div class={`metric metric--${metric.tone}`} style={`--tilt: ${metric.tilt}deg`}>
+  <span class="metric__eyebrow">{metric.eyebrow}</span>
+  <span class="metric__value">{metric.value}</span>
+  <span class="metric__caption">{metric.caption}</span>
+</div>

@@ -1,0 +1,11 @@
+---
+// Hand-drawn looping arrow that sits next to section titles.
+interface Props {
+  color?: string;
+}
+const { color = "#0B0B14" } = Astro.props;
+---
+<svg class="squiggle" viewBox="0 0 120 60" aria-hidden="true">
+  <path d="M4 22C30 8 60 10 70 24 80 38 60 50 50 40 40 30 70 18 100 34 106 37 110 42 112 46" fill="none" stroke={color} stroke-width="1.8" stroke-linecap="round" />
+  <path d="M101 47L112 46 109 35" fill="none" stroke={color} stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+</svg>

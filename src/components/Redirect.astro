@@ -1,0 +1,21 @@
+---
+// A tiny page that sends visitors from an old address to the right place on the new site.
+interface Props {
+  to: string;
+  label: string;
+}
+const { to, label } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>{label} | Yash Shah</title>
+    <meta name="robots" content="noindex" />
+    <meta http-equiv="refresh" content={`0; url=${to}`} />
+    <link rel="canonical" href={new URL(to, "https://www.yashshah.co.in").href} />
+  </head>
+  <body style="font-family: system-ui, sans-serif; padding: 40px">
+    <p>This page has moved. <a href={to}>Go to {label}</a>.</p>
+  </body>
+</html>

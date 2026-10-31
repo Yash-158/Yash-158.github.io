@@ -1,0 +1,56 @@
+---
+// /certificates: every document on the site, grouped by type, with filters.
+import Base from "../../layouts/Base.astro";
+import Icon from "../../components/Icon.astro";
+import DocCard from "../../components/DocCard.astro";
+import { documents, documentTypes } from "../../data/documents.js";
+
+const groups = documentTypes
+  .map((t) => ({ ...t, docs: documents.filter((d) => d.type === t.id) }))
+  .filter((g) => g.docs.length > 0);
+const filters = [{ id: "all", label: "All", count: documents.length }, ...groups.map((g) => ({ id: g.id, label: g.label, count: g.docs.length }))];
+const share = documents.find((d) => d.slug === "sih-2025-winner");
+---
+<Base
+  title="Certificates | Yash Shah"
+  description="Every certificate, internship letter, press story and photo of my work, each with its own page, the original document and a verify link where the issuer has one."
+  current="Certificates"
+  image={share?.share}
+  imageAlt="Yash Shah's Smart India Hackathon 2025 winner certificate"
+>
+  <section class="docs-hero" aria-labelledby="docs-title">
+    <img class="cloud" src="/images/grain.webp" alt="" aria-hidden="true" width="720" height="720" />
+    <div class="docs-hero__copy">
+      <a class="back-link" href="/"><Icon name="left" size={16} />Back to portfolio</a>
+      <p class="eyebrow">{documents.length} documents</p>
+      <h1 id="docs-title">Certificates.</h1>
+      <p class="docs-hero__lead">Internships, hackathons, courses, letters, press and photos. Open any of them to see it large, read what it is for, open the original or check it with the issuer.</p>
+    </div>
+  </section>
+
+  <div class="docs-filters band">
+    <div class="filters" role="group" aria-label="Filter by type" data-filter-group="all-docs">
+      {filters.map((f) => (
+        <button type="button" class="filter" data-filter={f.id} aria-pressed={f.id === "all" ? "true" : "false"}>
+          {f.label} <span>{f.count}</span>
+        </button>
+      ))}
+    </div>
+    <p class="visually-hidden" aria-live="polite" data-filter-status="all-docs"></p>
+  </div>
+
+  <div data-filter-list="all-docs">
+    {groups.map((g) => (
+      <section class="docs-group" data-filter-section="all-docs" data-type={g.id} aria-labelledby={`group-${g.id}`}>
+        <h2 class="docs-group__title" id={`group-${g.id}`}>{g.label} <span>{g.docs.length}</span></h2>
+        <ul class="doc-grid">
+          {g.docs.map((d) => <DocCard doc={d} />)}
+        </ul>
+      </section>
+    ))}
+  </div>
+</Base>
+
+<script>
+  import "../../scripts/filters.ts";
+</script>

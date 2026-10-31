@@ -1,0 +1,33 @@
+---
+// A featured image with a row of thumbnails and captions underneath.
+// Every picture is a link to the image itself, so it works without JavaScript.
+// With JavaScript, the links open the lightbox (see Lightbox.astro), which
+// works with the arrow keys, swiping and Esc.
+interface Props {
+  images: { src: string; alt: string; caption: string; thumb?: string; href?: string; doc?: string }[];
+  group: string;
+  portrait?: boolean;
+}
+const { images, group, portrait = false } = Astro.props;
+const [first, ...rest] = images;
+---
+<div class={`pgallery${portrait ? " pgallery--portrait" : ""}`}>
+  <figure class="pgallery__main">
+    <a href={first.src} data-lightbox={group} data-caption={first.caption}>
+      <img src={first.src} alt={first.alt} loading="lazy" decoding="async" />
+    </a>
+    <figcaption>{first.caption}{first.doc && <> <a class="pgallery__doc" href={first.doc}>View the document</a></>}</figcaption>
+  </figure>
+  {rest.length > 0 && (
+    <ul class="pgallery__row">
+      {rest.map((im) => (
+        <li>
+          <a href={im.src} data-lightbox={group} data-caption={im.caption}>
+            <img src={im.thumb || im.src} alt={im.alt} loading="lazy" decoding="async" />
+          </a>
+          <p>{im.caption}{im.doc && <> <a class="pgallery__doc" href={im.doc}>View the document</a></>}</p>
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
