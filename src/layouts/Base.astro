@@ -96,7 +96,7 @@ const person = {
     // Fade sections up as they scroll into view. Only things that start below
     // the first screen are hidden first, so nothing ever blinks on load.
     const targets = document.querySelectorAll<HTMLElement>(
-      "main > section > .section-head, .services__head, .card-grid > *, .row, .third-paper, .more__title, .more-grid > li, .sih-card, .win-grid > li, .press-grid > li, .job, .certs__head, .doc-grid > li, .doc-hero, .pgallery, .details > div, .contact > h2, .split, .feature-grid > *, .steps-head, .steps > li, .results__grid > *, .results > .h-sub, .ticks > li, .gallery > figure, .stack-row, .next",
+      "main > section > .section-head, .services__head, .card-grid > *, .row, .third-paper, .ip__intro, .ip-list > li, .more__title, .more-grid > li, .sih-card, .win-grid > li, .press-grid > li, .job, .certs__head, .doc-grid > li, .doc-hero, .pgallery, .details > div, .contact > h2, .split, .feature-grid > *, .steps-head, .steps > li, .results__grid > *, .results > .h-sub, .ticks > li, .gallery > figure, .stack-row, .next",
     );
     const show = new IntersectionObserver(
       (entries) => {

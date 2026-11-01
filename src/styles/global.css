@@ -314,6 +314,27 @@ img[src$="grain.webp"] {
 .third-paper { padding: 8px var(--gutter) clamp(48px, 6vw, 80px); font-size: 1em; color: var(--body); }
 .third-paper svg { display: inline-block; vertical-align: -1px; margin-right: 8px; }
 
+/* ---------- intellectual property (home, after research) ---------- */
+.ip { padding-bottom: clamp(48px, 6vw, 80px); }
+.ip__intro { margin: 0 var(--gutter); max-width: 62ch; }
+.ip-list { display: grid; gap: 12px; margin: clamp(24px, 3vw, 32px) var(--gutter) 0; }
+.ip-row {
+  display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) 230px; align-items: center; gap: 10px 24px;
+  padding: 20px 26px; background: #fff; border: 1px solid var(--line); border-radius: 18px;
+}
+.ip-row--accepted { border-color: var(--periwinkle); box-shadow: 0 20px 44px -30px rgba(36, 87, 255, 0.55); }
+.ip-row__name { font-weight: 500; font-size: clamp(20px, 2vw, 24px); line-height: 1.25; letter-spacing: -0.02em; }
+.ip-row__status { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+.ip-badge { display: inline-block; padding: 6px 14px; border-radius: 999px; background: var(--panel); color: var(--accent-ink); font-size: 15px; font-weight: 500; line-height: 1.4; }
+.ip-badge--accepted { background: var(--accent); color: #fff; }
+.ip-row__note { font-size: 15px; color: var(--muted); }
+.ip-row__link { justify-self: end; }
+@media (max-width: 900px) {
+  .ip-row { grid-template-columns: 1fr; padding: 18px 20px; }
+  .ip-row__link { justify-self: start; }
+  span.ip-row__link { display: none; }
+}
+
 /* more projects list */
 .more { padding: clamp(36px, 5vw, 64px) var(--gutter) clamp(56px, 7vw, 96px); }
 

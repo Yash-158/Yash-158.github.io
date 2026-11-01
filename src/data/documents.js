@@ -12,6 +12,10 @@
 // - `description` uses only what the document says, or facts already on the site.
 // - The files are made by "Yash Website/tools/prepare-documents.py" from the originals in DOC.
 //   Files that showed private details are covered and flattened before they get here.
+// - `linkLabel` (optional) replaces the word "Certificate" in links to a document that is not a
+//   certificate yet, for example "Acceptance status". Its page then says "Open the acceptance status".
+// - Design patent filing papers and anything with an application number are never published,
+//   except the status of a design patent that has been accepted for registration.
 // - Same house rules as site.js: no em dashes, no semicolons, no phone numbers.
 
 export const documentTypes = [
@@ -359,6 +363,21 @@ const raw = [
       "A sieve analysis of a Porbandar coast sand sample, carried out in the Civil Engineering Laboratory of Sri Sairam Engineering College and signed and stamped by the head of the department. We used it to check Coast Scan's grain size results against the standard lab method.",
     related: { project: "coast-scan", label: "Coast Scan, the project it validates" },
     pages: pagesOf("coast-scan-lab-report-2025", [[1600, 2458], [1600, 2302]]),
+  },
+  {
+    slug: "soil-moisture-meter-design-2026",
+    type: "research",
+    title: "Design patent accepted for registration, Portable Soil Moisture Meter",
+    shortTitle: "Design patent accepted, soil moisture meter",
+    issuer: "Office of the Controller General of Patents, Designs and Trade Marks, India",
+    dates: "Oct 2026",
+    when: "Oct 2026",
+    sort: "2026-10-12",
+    description:
+      "The design patent for the Portable Soil Moisture Meter, filed with the Indian Patent Office on 12 October 2026, has been accepted for registration. The certificate of registration is in progress.",
+    alt: "Indian Patent Office status page for the Portable Soil Moisture Meter design patent, accepted for registration",
+    redacted: "The fee receipt number (CBR Number) is covered.",
+    linkLabel: "Acceptance status", // the certificate of registration is not issued yet
   },
 
   // ------------------------------------------------------------------ Appreciation

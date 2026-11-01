@@ -109,6 +109,19 @@ export const papers = [
 ];
 export const thirdPaper = "A third paper is in progress.";
 
+// "Intellectual Property" on the home page, straight after Published research. The same facts as Anvi's site.
+// Say "design patent" only, never "application", and show no application numbers.
+// `accepted` gives the row the accent badge. `doc` adds the "View acceptance status" link.
+export const ip = {
+  title: "Intellectual Property",
+  intro: "Three design patents filed with the Indian Patent Office, one accepted for registration and two under examination.",
+  designs: [
+    { name: "Portable Soil Moisture Meter", status: "Accepted for registration", accepted: true, note: "Certificate in progress", doc: "soil-moisture-meter-design-2026", linkText: "View acceptance status" },
+    { name: "Compact Soil Moisture Monitoring Device", status: "Under examination" },
+    { name: "Portable Sediment Grain Size Analysis Device (Coast Scan)", status: "Under examination" },
+  ],
+};
+
 // ---------------------------------------------------------------------------
 // Projects. The first four are the big rows on the home page.
 // Every project with `sections` gets its own page at /projects/<slug>.
@@ -630,7 +643,8 @@ export const moreProjects = [
     name: "Soil moisture monitor",
     tag: "Hardware",
     icon: "chip",
-    line: "An ESP32 device that beeps and lights up when a plant needs water. Both of its enclosure designs are design patents filed with the Indian Patent Office, under examination.",
+    line: "An ESP32 device that beeps and lights up when a plant needs water. Both of its enclosure designs are design patents filed with the Indian Patent Office. The Portable Soil Moisture Meter design patent has been accepted for registration, with the certificate in progress, and the Compact Soil Moisture Monitoring Device design patent is under examination.",
+    doc: "soil-moisture-meter-design-2026",
   },
   {
     name: "Synapse",
@@ -674,8 +688,8 @@ export const sih = {
 export const wins = [
   { id: "singapore", date: "Oct 2026", icon: "flag", title: "Selected, Singapore India Hackathon 2026", summary: "With AICTE and the Ministry of Education. The event is ongoing.",
     detail: ["Selected for the Singapore India Hackathon 2026, with AICTE and the Ministry of Education.", "The event is ongoing."] },
-  { id: "patents", date: "Oct 2026", icon: "bulb", title: "Three design patents filed", summary: "Filed with the Indian Patent Office, under examination.",
-    detail: ["Three design patents filed with the Indian Patent Office, all under examination.", "One is for Coast Scan, the \"Portable Sediment Grain Size Analysis Device\".", "The other two are the two enclosure designs of our soil moisture monitor."],
+  { id: "patents", date: "Oct 2026", icon: "bulb", title: "Three design patents filed", summary: "Filed with the Indian Patent Office, one accepted for registration and two under examination.",
+    detail: ["Three design patents filed with the Indian Patent Office, one accepted for registration and two under examination.", "One is for Coast Scan, the \"Portable Sediment Grain Size Analysis Device\".", "The other two are the two enclosure designs of our soil moisture monitor.", "The Portable Soil Moisture Meter design patent has been accepted for registration, with the certificate in progress, and the Compact Soil Moisture Monitoring Device design patent is under examination."],
     project: "coast-scan" },
   { id: "tetrathon", date: "Aug 2026", icon: "medal", title: "5th Place, TetraTHON 2026, Indo-French AI Innovation Sprint", summary: "5th of 44 finalist teams.",
     detail: ["5th Place, 5th of 44 finalist teams, at TetraTHON 2026, Indo-French AI Innovation Sprint, a 36-hour sprint.", "We built EduBridge AI, which explains a live English lecture in the student's own language."],

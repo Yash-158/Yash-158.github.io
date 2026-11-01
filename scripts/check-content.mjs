@@ -63,7 +63,9 @@ for (const file of pages) {
     if (/lorem ipsum|placeholder|\bTODO\b|\bTBD\b|example\.com/i.test(line)) hit("placeholder text");
     if (/design applications?/i.test(line)) hit('"design application" (say "design patents filed with the Indian Patent Office, under examination")');
     if (/\bgranted\b/i.test(line)) hit('the word "granted" (a design patent is filed and under examination, never granted)');
-    if (/(?<!design )\bpatents?\b(?! office)/i.test(line)) hit('"patent" without "design" (say "design patent")');
+    // The issuing office's official name is the only other place "Patents" may appear.
+    const withoutOffice = line.replace(/Controller General of Patents, Designs and Trade Marks/g, "");
+    if (/(?<!design )\bpatents?\b(?! office)/i.test(withoutOffice)) hit('"patent" without "design" (say "design patent")');
     if (/Space Applications Centre/i.test(line)) hit("Space Applications Centre is not named on the site");
     if (/waitlist/i.test(line)) hit("never mention a waitlist");
     if (/\binterview round/i.test(line)) hit("never mention an interview round");
