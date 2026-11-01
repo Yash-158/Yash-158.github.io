@@ -203,6 +203,8 @@ img[src$="grain.webp"] {
   .sticker--isro { right: auto; left: 0; top: 1%; }
   .sticker--oval { left: auto; right: 0; top: 52%; padding: 11px 18px; font-size: 14px; }
   .sticker--sih { left: 0; bottom: 19%; }
+  /* The full event name stays on one line, so the card keeps its two-line height. */
+  .sticker--sih span span { white-space: nowrap; }
   .sticker--papers { right: 0; bottom: 1%; }
   /* On a phone the frame fills the column, so the cloud sits higher and peeks out above it. */
   .project-hero__art:not(.project-hero__art--metric) .cloud { top: 26%; }

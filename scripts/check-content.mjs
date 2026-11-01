@@ -65,6 +65,8 @@ for (const file of pages) {
     if (/\bgranted\b/i.test(line)) hit('the word "granted" (a design patent is filed and under examination, never granted)');
     if (/(?<!design )\bpatents?\b(?! office)/i.test(line)) hit('"patent" without "design" (say "design patent")');
     if (/Space Applications Centre/i.test(line)) hit("Space Applications Centre is not named on the site");
+    if (/waitlist/i.test(line)) hit("never mention a waitlist");
+    if (/\binterview round/i.test(line)) hit("never mention an interview round");
   }
 }
 

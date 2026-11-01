@@ -45,8 +45,8 @@ const fileLabel = d.photo ? "Open the original photo" : "Open the original (PDF)
         <h1 class="doc-hero__title">{d.shortTitle}</h1>
         <p class="doc-hero__desc">{d.description}</p>
         <dl class="doc-facts">
-          <div><dt>{d.photo ? "Photo" : d.type === "press" ? "Headline" : "Title as printed"}</dt><dd>{d.title}</dd></div>
-          <div><dt>{d.type === "press" ? "Published by" : d.photo ? "Event" : "Issued by"}</dt><dd>{d.issuer}</dd></div>
+          <div><dt>{d.photo ? "Photo" : "Title"}</dt><dd>{d.title}</dd></div>
+          <div><dt>{d.type === "press" ? "Published by" : d.photo ? "Event" : "Issued by"}</dt><dd>{d.printedIssuer || d.issuer}</dd></div>
           {d.dates && <div><dt>Date</dt><dd>{d.dates}</dd></div>}
         </dl>
         <div class="doc-actions">
