@@ -8,7 +8,7 @@ export const site = {
   url: "https://www.yashshah.co.in",
   title: "Yash Shah | AI/ML Engineer and Researcher",
   description:
-    "I'm Yash Shah, an AI/ML engineer and researcher from Ahmedabad. I was an AI/ML Research Intern at ISRO, I'm a National Winner at Smart India Hackathon 2025, Hardware Edition, and I co-authored two papers accepted by Springer Nature journals.",
+    "I'm Yash Shah, an AI/ML engineer and researcher from Ahmedabad. I was an AI/ML Research Intern at ISRO, I'm a National Winner at Smart India Hackathon 2025, Hardware Edition, and I co-authored two papers accepted by Springer Nature journals, one in a Q1 journal indexed in Web of Science and Scopus.",
   email: "work.yash15@gmail.com",
   linkedin: "https://www.linkedin.com/in/simplyyash",
   github: "https://github.com/Yash-158",
@@ -48,7 +48,7 @@ export const about = {
     ["National Winner at Smart India Hackathon 2025, Hardware Edition", true],
     [", and I co-authored ", false],
     ["two papers accepted by Springer Nature journals", true],
-    [".", false],
+    [", one in a Q1 journal indexed in Web of Science and Scopus.", false],
   ],
   badge: ["Open to", "internships", "Jan to Jul 2027"],
 };
@@ -88,6 +88,9 @@ export const papers = [
   {
     venue: "Springer Nature,",
     journal: "Education and Information Technologies",
+    // The whole journal line after the journal name, status included. These metrics belong to this
+    // journal only. Never give Q1, Web of Science, Scopus or the impact factor to the Cureus paper.
+    journalLine: ", Springer Nature. Q1, indexed in Web of Science and Scopus, Impact Factor 7.2. Accepted for publication.",
     title: "Frequency-Family Classification of Marsquakes from Spectrograms with a Hybrid Convolutional and Fourier Neural Operator",
     authors: [["Yash Shah", true, " (first author)"], ["Anvi Panchal", false], ["Madhuri Chopade", false]],
     status: "Accepted for publication.",

@@ -145,13 +145,25 @@ const filters = [
     {papers.map((p, i) => (
       <article class={`row${i % 2 ? " row--flip" : ""}`}>
         <div class="row__copy">
-          <p class="row__venue">{p.venue} <em>{p.journal}</em></p>
+          {p.journalLine ? (
+            <p class="row__venue"><em>{p.journal}</em>{p.journalLine}</p>
+          ) : (
+            <p class="row__venue">{p.venue} <em>{p.journal}</em></p>
+          )}
           <h3 class="row__title">{p.title}</h3>
-          <p class="row__authors">
-            {p.authors.map(([n, me, extra], k) => (
-              <>{k > 0 && ", "}{me ? <strong>{n}</strong> : n}{extra}</>
-            ))}. {p.status}
-          </p>
+          {p.journalLine ? (
+            <p class="row__authors">
+              {p.authors.map(([n, me, extra], k) => (
+                <>{k > 0 && ", "}{me ? <strong>{n}</strong> : n}{extra}</>
+              ))}.
+            </p>
+          ) : (
+            <p class="row__authors">
+              {p.authors.map(([n, me, extra], k) => (
+                <>{k > 0 && ", "}{me ? <strong>{n}</strong> : n}{extra}</>
+              ))}. {p.status}
+            </p>
+          )}
           <p class="row__text">{p.text}</p>
           <div class="row__links">
             <a class="circle-link" href={p.link} target="_blank" rel="noopener">
