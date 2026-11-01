@@ -12,10 +12,11 @@ const { doc, headingLevel = "h3" } = Astro.props;
 const H = headingLevel;
 const typeLabel = documentTypes.find((t) => t.id === doc.type)?.one ?? "";
 // The first sentence of the description is the one-line summary.
+const pageCount = doc.pages ? doc.pages.length : 1;
 const line = doc.description.match(/^.*?[.!?](?=\s|$)/)?.[0] ?? doc.description;
 ---
 <li class="doc-card" data-type={doc.type}>
-  <a class="doc-card__thumb" href={doc.url} tabindex="-1" aria-hidden="true">
+  <a class={`doc-card__thumb${pageCount > 1 ? " doc-card__thumb--pages" : ""}`} href={doc.url} tabindex="-1" aria-hidden="true">
     <img
       src={doc.thumb}
       srcset={`${doc.thumbSmall} 480w, ${doc.thumb} 960w`}
@@ -25,10 +26,11 @@ const line = doc.description.match(/^.*?[.!?](?=\s|$)/)?.[0] ?? doc.description;
       loading="lazy"
       decoding="async"
     />
+    {pageCount > 1 && <span class="doc-card__pages">{pageCount} pages</span>}
   </a>
   <div class="doc-card__body">
     <span class="doc-card__type">{typeLabel}</span>
-    <H class="doc-card__title"><a href={doc.url}>{doc.shortTitle}</a></H>
+    <H class="doc-card__title"><a href={doc.url}>{doc.shortTitle}{pageCount > 1 && <span class="visually-hidden">, {pageCount} pages</span>}</a></H>
     <p class="doc-card__meta">{doc.issuer}{doc.when && <>, {doc.when}</>}</p>
     <p class="doc-card__line">{line}</p>
     <a class="text-link doc-card__view" href={doc.url}>View<Icon name="right" size={15} stroke={2.2} /><span class="visually-hidden">: {doc.shortTitle}</span></a>

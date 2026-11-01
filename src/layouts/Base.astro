@@ -42,6 +42,9 @@ const person = {
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <!-- Marks that JavaScript runs, before the first paint, so the document viewer draws its page stack
+         straight away instead of moving once its script loads (see components/DocViewer.astro). -->
+    <script is:inline>document.documentElement.classList.add("dv-js");</script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />

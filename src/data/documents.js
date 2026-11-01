@@ -25,6 +25,17 @@ export const documentTypes = [
   { id: "photo", label: "Photos", one: "Photo" },
 ];
 
+// The pages of a multi-page document, made by the document tool with --pages from the published
+// PDF: pages/<slug>-p<n>.webp (1600 px wide) and pages/<slug>-p<n>-sm.webp (320 px wide, for the strip).
+// `sizes` lists the width and height of each large page image.
+const pagesOf = (slug, sizes) =>
+  sizes.map(([width, height], i) => ({
+    src: `/certificates/pages/${slug}-p${i + 1}.webp`,
+    thumb: `/certificates/pages/${slug}-p${i + 1}-sm.webp`,
+    width,
+    height,
+  }));
+
 // Related links. `project` is a project slug with its own page, `section` is a part of the home page.
 const raw = [
   // ------------------------------------------------------------------ Internships
@@ -347,6 +358,7 @@ const raw = [
     description:
       "A sieve analysis of a Porbandar coast sand sample, carried out in the Civil Engineering Laboratory of Sri Sairam Engineering College and signed and stamped by the head of the department. We used it to check Coast Scan's grain size results against the standard lab method.",
     related: { project: "coast-scan", label: "Coast Scan, the project it validates" },
+    pages: pagesOf("coast-scan-lab-report-2025", [[1600, 2458], [1600, 2302]]),
   },
 
   // ------------------------------------------------------------------ Appreciation

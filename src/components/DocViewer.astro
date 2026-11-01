@@ -1,0 +1,515 @@
+---
+// A document viewer for certificate pages. The same file is used on both portfolio sites.
+// Each site gives it its own colours through the --dv-* variables in its global stylesheet.
+//
+// Without JavaScript, every page simply shows one under another, sharp and full width.
+// With JavaScript, a multi-page document becomes a stack of paper with a page strip,
+// arrows and a counter, and every document (one page or many) opens in a full-screen
+// viewer built on <dialog>, with zoom, pan, pinch and swipe.
+//
+//   pages       [{ src, thumb?, width, height, alt }]. One entry for a single-page document.
+//   title       a short name, used in labels such as "Coast Scan, lab validation report"
+//   frameClass  the site's own frame look, given to every sheet
+//
+// Each site's <head> sets the class "dv-js" on <html> with a one-line inline script, before
+// anything is painted. The stack is then drawn right the first time, with no layout shift.
+interface Page { src: string; thumb?: string; width?: number; height?: number; alt: string }
+interface Props { pages: Page[]; title: string; frameClass?: string }
+const { pages, title, frameClass = "" } = Astro.props;
+const n = pages.length;
+const multi = n > 1;
+const first = pages[0];
+// Each sheet knows its shape before its picture loads, so nothing moves when it arrives.
+const ratio = (p: Page) => (p.width && p.height ? p.width / p.height : 0.7071);
+const deckRatio = Math.max(...pages.map(ratio));
+const thumbHeight = (p: Page) => (p.width && p.height ? Math.round((320 * p.height) / p.width) : undefined);
+---
+<div class={`dv${multi ? " dv--multi" : ""}`} data-dv>
+  <div class="dv__deck" style={`--ar: ${deckRatio.toFixed(4)}`}>
+    {pages.map((p, i) => (
+      <figure class={`dv__sheet ${frameClass}`} style={`--ar: ${ratio(p).toFixed(4)}`} data-dv-sheet data-pos={i === 0 ? "front" : i === 1 ? "back1" : i === 2 ? "back2" : "hidden"}>
+        <img src={p.src} alt={p.alt} width={p.width} height={p.height} loading={i === 0 ? "eager" : "lazy"} decoding="async" draggable="false" />
+      </figure>
+    ))}
+    {multi && <span class="dv__badge">{n} pages</span>}
+    {multi && (
+      <button type="button" class="dv__arrow dv__arrow--prev" data-dv-prev aria-label="Show the previous page" disabled>
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+      </button>
+    )}
+    {multi && (
+      <button type="button" class="dv__arrow dv__arrow--next" data-dv-next aria-label="Show the next page">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+      </button>
+    )}
+    <button type="button" class="dv__full" data-dv-full aria-label={`View ${title} full screen`}>
+      <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+      <span>View full screen</span>
+    </button>
+  </div>
+
+  {multi && (
+    <div class="dv__strip">
+      <p class="dv__count" data-dv-count aria-live="polite">Page 1 of {n}</p>
+      <ul class="dv__thumbs">
+        {pages.map((p, i) => (
+          <li>
+            <button type="button" class="dv__thumb" data-dv-go={i} aria-label={`Show page ${i + 1} of ${n}`} aria-current={i === 0 ? "true" : undefined}>
+              <img src={p.thumb || p.src} alt="" aria-hidden="true" width="320" height={thumbHeight(p)} loading="lazy" decoding="async" draggable="false" />
+              <span>Page {i + 1}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )}
+
+  <dialog class="dv-box" aria-label={`${title}, full screen`}>
+    <div class="dv-box__bar">
+      <p class="dv-box__title">{title}</p>
+      {multi && <p class="dv-box__count" data-dv-bcount aria-live="polite">1 / {n}</p>}
+      <button type="button" class="dv-box__btn" data-dv-zoom aria-pressed="false" aria-label="Zoom in">
+        <svg class="dv-i-in" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2" /><path d="M16 16l4.5 4.5M11 8v6M8 11h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+        <svg class="dv-i-out" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2" /><path d="M16 16l4.5 4.5M8 11h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+      </button>
+      <button type="button" class="dv-box__btn" data-dv-close aria-label="Close the full screen view">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" /></svg>
+      </button>
+    </div>
+    <div class="dv-box__view" data-dv-view>
+      <img class="dv-box__img" data-dv-img src={first.src} alt={first.alt} width={first.width} height={first.height} loading="lazy" decoding="async" draggable="false" />
+    </div>
+    {multi && (
+      <button type="button" class="dv-box__btn dv-box__nav dv-box__nav--prev" data-dv-bprev aria-label="Show the previous page" disabled>
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+      </button>
+    )}
+    {multi && (
+      <button type="button" class="dv-box__btn dv-box__nav dv-box__nav--next" data-dv-bnext aria-label="Show the next page">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+      </button>
+    )}
+    <p class="dv-box__hint"><span class="dv-hint-fine">Double-click or pinch to zoom, then drag to move.</span><span class="dv-hint-touch">Double-tap or pinch to zoom, then drag.</span></p>
+  </dialog>
+</div>
+
+<style is:global>
+  /* ---------- Document viewer ----------
+     Colours come only from the --dv-* variables, which each site sets in its own :root. */
+  .dv { position: relative; }
+  /* A sheet is as wide as the column, or as wide as its page at the site's largest page height
+     (--dv-max-h), whichever is smaller. Its height then follows from the image's own shape, so the
+     space is reserved before the picture loads. --dv-frame-pad is the frame's padding on both sides. */
+  .dv__deck { position: relative; display: grid; width: min(100%, calc(var(--dv-max-h, 100000px) * var(--ar, 1) + var(--dv-frame-pad, 0px))); margin-inline: auto; }
+  .dv .dv__sheet { box-sizing: border-box; width: min(100%, calc(var(--dv-max-h, 100000px) * var(--ar, 1) + var(--dv-frame-pad, 0px))); max-width: 100%; margin: 0; justify-self: center; }
+  .dv .dv__sheet img { display: block; width: 100%; max-width: 100%; height: auto; max-height: none; }
+  /* Without JavaScript: the pages simply sit one under another. */
+  .dv .dv__sheet + .dv__sheet { margin-top: 1.25rem; }
+  .dv__badge {
+    position: absolute; top: 1.125rem; left: 1.125rem; z-index: 6;
+    padding: 0.25rem 0.625rem; border-radius: 999px; background: var(--dv-control); color: var(--dv-control-ink);
+    font-size: 0.8125rem; font-weight: 600; line-height: 1.4; letter-spacing: 0.01em;
+    box-shadow: 0 0.375rem 1rem -0.5rem rgb(var(--dv-shadow) / 0.6); pointer-events: none;
+  }
+  .dv__arrow, .dv__full, .dv__strip { display: none; }
+
+  /* With JavaScript: a stack of paper. The front page is sharp and on top, and the next pages sit
+     behind it, slightly offset and turned, also sharp. */
+  .dv-js .dv--multi .dv__deck { padding-bottom: 0.75rem; }
+  .dv-js .dv--multi .dv__sheet { grid-area: 1 / 1; margin: 0; align-self: start; justify-self: center; transform-origin: 50% 60%; transition: transform 0.22s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.22s ease; }
+  .dv-js .dv--multi .dv__sheet[data-pos="front"] { z-index: 3; transform: rotate(var(--dv-tilt, 0deg)); cursor: zoom-in; }
+  .dv-js .dv--multi .dv__sheet[data-pos="back1"] { z-index: 2; transform: translate(0.75rem, 0.625rem) rotate(calc(var(--dv-tilt, 0deg) + 2.5deg)); cursor: pointer; }
+  .dv-js .dv--multi .dv__sheet[data-pos="back2"] { z-index: 1; transform: translate(-0.5rem, 0.875rem) rotate(calc(var(--dv-tilt, 0deg) - 1.75deg)); cursor: pointer; }
+  .dv-js .dv--multi .dv__sheet[data-pos="hidden"] { visibility: hidden; }
+  .dv-js .dv:not(.dv--multi) .dv__sheet { cursor: zoom-in; }
+
+  .dv-js .dv--multi .dv__arrow {
+    position: absolute; top: 50%; z-index: 6; display: inline-flex; align-items: center; justify-content: center;
+    width: 2.75rem; height: 2.75rem; padding: 0; border: 1px solid var(--dv-line); border-radius: 999px;
+    background: var(--dv-surface); color: var(--dv-ink); cursor: pointer; transform: translateY(-50%);
+    box-shadow: 0 0.75rem 1.5rem -0.75rem rgb(var(--dv-shadow) / 0.55);
+    transition: background-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+  }
+  .dv-js .dv--multi .dv__arrow--prev { left: -1.375rem; }
+  .dv-js .dv--multi .dv__arrow--next { right: -0.625rem; }
+  .dv-js .dv--multi .dv__arrow:hover:not(:disabled) { background: var(--dv-control); color: var(--dv-control-ink); border-color: var(--dv-control); }
+  .dv-js .dv--multi .dv__arrow:disabled { opacity: 0; pointer-events: none; }
+
+  .dv-js .dv__full {
+    position: absolute; right: 1.25rem; bottom: 1.25rem; z-index: 6; display: inline-flex; align-items: center; gap: 0.4375rem;
+    min-height: 2.5rem; min-width: 10.25rem; justify-content: center; padding: 0 0.9375rem; border: 0; border-radius: 999px; white-space: nowrap;
+    background: var(--dv-control); color: var(--dv-control-ink); font: inherit; font-size: 0.875rem; font-weight: 500; line-height: 1;
+    cursor: pointer; box-shadow: 0 0.625rem 1.375rem -0.625rem rgb(var(--dv-shadow) / 0.7); transition: transform 0.15s ease;
+  }
+  .dv-js .dv--multi .dv__full { right: 2rem; bottom: 2rem; }
+  .dv-js .dv__full:hover { transform: translateY(-1px); }
+
+  .dv-js .dv--multi .dv__strip { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.75rem 1.25rem; margin-top: 1.25rem; }
+  .dv__count { margin: 0; min-width: 6.5em; font-size: 0.9375rem; color: var(--dv-muted); font-variant-numeric: tabular-nums; text-align: center; }
+  .dv__thumbs { display: flex; gap: 0.75rem; margin: 0; padding: 0; list-style: none; }
+  .dv .dv__thumb {
+    display: flex; flex-direction: column; align-items: center; gap: 0.375rem; padding: 0.4375rem 0.4375rem 0.375rem;
+    border: 1px solid var(--dv-line); border-radius: 0.75rem; background: var(--dv-surface); color: var(--dv-muted);
+    font: inherit; font-size: 0.8125rem; line-height: 1.2; cursor: pointer;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
+  }
+  .dv .dv__thumb img { display: block; width: 3.5rem; max-width: none; height: auto; border-radius: 3px; box-shadow: 0 0 0 1px rgb(var(--dv-shadow) / 0.14); }
+  .dv .dv__thumb:hover { border-color: var(--dv-accent); }
+  .dv .dv__thumb[aria-current="true"] { border-color: var(--dv-accent); box-shadow: 0 0 0 1px var(--dv-accent); color: var(--dv-ink); font-weight: 600; }
+
+  /* ---------- Full-screen viewer ---------- */
+  html.dv-locked { overflow: hidden; }
+  html.dv-locked body { padding-right: var(--dv-sb, 0px); }
+  .dv .dv-box {
+    position: fixed; inset: 0; width: 100vw; height: 100vh; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0;
+    border: 0; background: var(--dv-backdrop); color: var(--dv-control-ink); overflow: hidden; opacity: 0; transition: opacity 0.2s ease;
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  }
+  .dv .dv-box[open] { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; }
+  .dv .dv-box.is-open { opacity: 1; }
+  .dv .dv-box::backdrop { background: transparent; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+  .dv-box__bar { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem clamp(0.75rem, 2vw, 1.25rem); }
+  .dv-box__title { flex: 1 1 auto; min-width: 0; margin: 0; overflow: hidden; font-size: 0.9375rem; font-weight: 500; white-space: nowrap; text-overflow: ellipsis; }
+  .dv-box__count { flex: 0 0 auto; white-space: nowrap; margin: 0 0.25rem 0 0; padding: 0.3125rem 0.75rem; border-radius: 999px; background: var(--dv-glass); font-size: 0.875rem; font-variant-numeric: tabular-nums; }
+  .dv .dv-box__btn {
+    display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; width: 2.75rem; height: 2.75rem; padding: 0;
+    border: 1px solid var(--dv-glass-line); border-radius: 999px; background: var(--dv-glass); color: var(--dv-control-ink);
+    cursor: pointer; transition: background-color 0.15s ease, opacity 0.15s ease;
+  }
+  .dv .dv-box__btn:hover:not(:disabled) { background: var(--dv-glass-strong); }
+  .dv .dv-box__btn:disabled { opacity: 0.3; cursor: default; }
+  .dv-box__btn .dv-i-out, .dv-box__btn[aria-pressed="true"] .dv-i-in { display: none; }
+  .dv-box__btn[aria-pressed="true"] .dv-i-out { display: block; }
+  .dv .dv-box :focus-visible { outline: 3px solid var(--dv-focus-dark); outline-offset: 3px; }
+  .dv-box__view {
+    position: relative; display: flex; align-items: center; justify-content: center; min-height: 0; overflow: hidden;
+    padding: 0 clamp(0.75rem, 6vw, 5.5rem); touch-action: none; cursor: zoom-in; user-select: none; -webkit-user-select: none;
+  }
+  .dv-box__view.is-zoomed { cursor: grab; }
+  .dv-box__view.is-dragging { cursor: grabbing; }
+  .dv .dv-box__img {
+    display: block; flex: 0 1 auto; width: auto; height: auto; min-width: 0; min-height: 0; max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 4px; background: var(--dv-surface);
+    box-shadow: 0 1.875rem 5rem -1.875rem rgb(var(--dv-shadow) / 0.8); transform-origin: 50% 50%; -webkit-user-drag: none;
+  }
+  .dv-box__nav { position: absolute; top: 50%; transform: translateY(-50%); }
+  .dv-box__nav--prev { left: clamp(0.5rem, 1.5vw, 1.5rem); }
+  .dv-box__nav--next { right: clamp(0.5rem, 1.5vw, 1.5rem); }
+  .dv-box__hint { margin: 0; padding: 0.625rem 1rem 0.875rem; font-size: 0.8125rem; text-align: center; color: var(--dv-control-ink); }
+
+  @media (max-width: 600px) {
+    .dv-js .dv--multi .dv__arrow { width: 2.5rem; height: 2.5rem; }
+    .dv-js .dv--multi .dv__arrow--prev { left: -0.5rem; }
+    .dv-js .dv--multi .dv__arrow--next { right: 0.25rem; }
+    .dv-js .dv__full { right: 0.875rem; bottom: 0.875rem; }
+    .dv-js .dv--multi .dv__full { right: 1.5rem; bottom: 1.5rem; }
+    .dv-box__view { padding: 0 0.5rem; }
+    /* On phones the arrows sit in the bottom row, beside the hint, so they never cover the page. */
+    .dv .dv-box[open] { grid-template-rows: auto minmax(0, 1fr) auto; }
+    .dv-box__nav { top: auto; bottom: 0.5rem; transform: none; }
+    .dv-box__hint { padding: 0.75rem 3.75rem 1.125rem; }
+  }
+
+  .dv-hint-touch { display: none; }
+  @media (pointer: coarse) {
+    .dv-hint-fine { display: none; }
+    .dv-hint-touch { display: inline; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dv .dv__sheet, .dv .dv-box, .dv .dv-box__img, .dv .dv__thumb, .dv .dv__arrow, .dv .dv__full, .dv .dv-box__btn { transition: none !important; }
+  }
+</style>
+
+<script>
+  // Turns every [data-dv] block into the stack, the page strip and the full-screen viewer.
+  const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  document.querySelectorAll<HTMLElement>("[data-dv]").forEach((root) => {
+    const sheets = Array.from(root.querySelectorAll<HTMLElement>("[data-dv-sheet]"));
+    const pages = sheets.map((s) => {
+      const i = s.querySelector("img")!;
+      return { src: i.getAttribute("src")!, alt: i.alt, w: Number(i.getAttribute("width")) || 0, h: Number(i.getAttribute("height")) || 0 };
+    });
+    const n = pages.length;
+    const multi = n > 1;
+    const prev = root.querySelector<HTMLButtonElement>("[data-dv-prev]");
+    const next = root.querySelector<HTMLButtonElement>("[data-dv-next]");
+    const count = root.querySelector<HTMLElement>("[data-dv-count]");
+    const thumbs = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-dv-go]"));
+    const full = root.querySelector<HTMLButtonElement>("[data-dv-full]")!;
+    const box = root.querySelector<HTMLDialogElement>("dialog")!;
+    let at = 0;
+
+    // ---------- the stack on the page ----------
+    const show = (i: number) => {
+      at = Math.max(0, Math.min(n - 1, i));
+      if (!multi) return;
+      sheets.forEach((s, k) => {
+        const d = (k - at + n) % n;
+        s.dataset.pos = d === 0 ? "front" : d === 1 ? "back1" : d === 2 ? "back2" : "hidden";
+        if (d === 0) s.removeAttribute("aria-hidden");
+        else s.setAttribute("aria-hidden", "true");
+      });
+      thumbs.forEach((t, k) => (k === at ? t.setAttribute("aria-current", "true") : t.removeAttribute("aria-current")));
+      if (count) count.textContent = `Page ${at + 1} of ${n}`;
+      const focused = document.activeElement;
+      if (prev) prev.disabled = at === 0;
+      if (next) next.disabled = at === n - 1;
+      // A button that just became disabled cannot keep focus, so hand it to the other arrow.
+      if (focused === prev && prev?.disabled) next?.focus();
+      if (focused === next && next?.disabled) prev?.focus();
+    };
+    show(0);
+    prev?.addEventListener("click", () => show(at - 1));
+    next?.addEventListener("click", () => show(at + 1));
+    thumbs.forEach((t, k) => t.addEventListener("click", () => show(k)));
+
+    if (typeof box.showModal !== "function") {
+      full.remove();
+      return;
+    }
+
+    // ---------- the full-screen viewer ----------
+    const img = box.querySelector<HTMLImageElement>("[data-dv-img]")!;
+    const view = box.querySelector<HTMLElement>("[data-dv-view]")!;
+    const bcount = box.querySelector<HTMLElement>("[data-dv-bcount]");
+    const bprev = box.querySelector<HTMLButtonElement>("[data-dv-bprev]");
+    const bnext = box.querySelector<HTMLButtonElement>("[data-dv-bnext]");
+    const zoomBtn = box.querySelector<HTMLButtonElement>("[data-dv-zoom]")!;
+    const closeBtn = box.querySelector<HTMLButtonElement>("[data-dv-close]")!;
+    let vi = 0, s = 1, tx = 0, ty = 0;
+    let opener: HTMLElement | null = null;
+    const loaded = new Map<string, HTMLImageElement>();
+    const preload = (i: number) => {
+      if (i < 0 || i >= n || loaded.has(pages[i].src)) return;
+      const im = new Image();
+      im.decoding = "async";
+      im.src = pages[i].src;
+      loaded.set(pages[i].src, im);
+    };
+
+    const apply = (animate = false) => {
+      img.style.transition = animate && !reduced() ? "transform 0.2s cubic-bezier(0.2, 0.7, 0.2, 1)" : "none";
+      img.style.transform = `translate3d(${tx}px, ${ty}px, 0) scale(${s})`;
+      const zoomed = s > 1.01;
+      view.classList.toggle("is-zoomed", zoomed);
+      zoomBtn.setAttribute("aria-pressed", String(zoomed));
+      zoomBtn.setAttribute("aria-label", zoomed ? "Zoom out" : "Zoom in");
+    };
+    // Keep the zoomed page inside the screen: you can pan to every edge, never past it.
+    const bounds = () => {
+      const mx = Math.max(0, (img.offsetWidth * s - view.clientWidth) / 2);
+      const my = Math.max(0, (img.offsetHeight * s - view.clientHeight) / 2);
+      tx = Math.max(-mx, Math.min(mx, tx));
+      ty = Math.max(-my, Math.min(my, ty));
+    };
+    // Zoom so that the point under (cx, cy) stays where it is.
+    const zoomAt = (ns: number, cx: number, cy: number, animate: boolean) => {
+      const r = view.getBoundingClientRect();
+      const ox = cx - (r.left + r.width / 2);
+      const oy = cy - (r.top + r.height / 2);
+      const px = (ox - tx) / s;
+      const py = (oy - ty) / s;
+      s = Math.max(1, Math.min(4, ns));
+      tx = ox - px * s;
+      ty = oy - py * s;
+      if (s === 1) tx = ty = 0;
+      bounds();
+      apply(animate);
+    };
+    const toggleZoom = (cx: number, cy: number) => zoomAt(s > 1.01 ? 1 : 2.5, cx, cy, true);
+
+    const showPage = (i: number) => {
+      vi = Math.max(0, Math.min(n - 1, i));
+      const p = pages[vi];
+      s = 1;
+      tx = ty = 0;
+      apply(false);
+      if (img.getAttribute("src") !== p.src) {
+        img.src = p.src;
+        if (!reduced()) img.animate([{ opacity: 0.35 }, { opacity: 1 }], { duration: 160, easing: "ease-out" });
+      }
+      img.alt = p.alt;
+      if (p.w && p.h) {
+        img.width = p.w;
+        img.height = p.h;
+      }
+      if (bcount) bcount.textContent = `${vi + 1} / ${n}`;
+      if (bprev) bprev.disabled = vi === 0;
+      if (bnext) bnext.disabled = vi === n - 1;
+      const f = document.activeElement;
+      if (f === bprev && bprev?.disabled) bnext?.focus();
+      if (f === bnext && bnext?.disabled) bprev?.focus();
+      preload(vi + 1);
+      preload(vi - 1);
+    };
+
+    const lock = () => {
+      const sb = window.innerWidth - document.documentElement.clientWidth;
+      if (sb > 0) document.documentElement.style.setProperty("--dv-sb", `${sb}px`);
+      document.documentElement.classList.add("dv-locked");
+    };
+    const unlock = () => {
+      document.documentElement.classList.remove("dv-locked");
+      document.documentElement.style.removeProperty("--dv-sb");
+    };
+    const onResize = () => { bounds(); apply(false); };
+
+    const openBox = (i: number) => {
+      const a = document.activeElement;
+      // Return focus to the control that opened the viewer. A click on the page itself
+      // returns it to the "View full screen" button beside it.
+      opener = a instanceof HTMLElement && a !== document.body && root.contains(a) ? a : full;
+      showPage(i);
+      lock();
+      box.showModal();
+      closeBtn.focus();
+      window.addEventListener("resize", onResize);
+      requestAnimationFrame(() => box.classList.add("is-open"));
+    };
+    let closing = false;
+    const closeBox = () => {
+      if (!box.open || closing) return;
+      closing = true;
+      box.classList.remove("is-open");
+      const done = () => {
+        closing = false;
+        if (box.open) box.close();
+      };
+      if (reduced()) done();
+      else setTimeout(done, 180);
+    };
+    box.addEventListener("cancel", (e) => {
+      e.preventDefault(); // Escape: fade out first, then close
+      closeBox();
+    });
+    box.addEventListener("close", () => {
+      closing = false;
+      box.classList.remove("is-open");
+      window.removeEventListener("resize", onResize);
+      unlock();
+      s = 1;
+      tx = ty = 0;
+      apply(false);
+      show(vi); // the page behind shows the page you were looking at
+      opener?.focus();
+    });
+
+    full.addEventListener("click", () => openBox(at));
+    sheets.forEach((sheet, k) =>
+      sheet.addEventListener("click", () => {
+        if (!multi || sheet.dataset.pos === "front") openBox(at);
+        else show(k); // a click on a page behind brings it to the front
+      }),
+    );
+    closeBtn.addEventListener("click", closeBox);
+    bprev?.addEventListener("click", () => showPage(vi - 1));
+    bnext?.addEventListener("click", () => showPage(vi + 1));
+    zoomBtn.addEventListener("click", () => {
+      const r = view.getBoundingClientRect();
+      toggleZoom(r.left + r.width / 2, r.top + r.height / 2);
+    });
+    box.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") { e.preventDefault(); showPage(vi - 1); }
+      else if (e.key === "ArrowRight") { e.preventDefault(); showPage(vi + 1); }
+      else if (e.key === "+" || e.key === "=") { const r = view.getBoundingClientRect(); zoomAt(s > 1.01 ? s : 2.5, r.left + r.width / 2, r.top + r.height / 2, true); }
+      else if (e.key === "-") { zoomAt(1, 0, 0, true); }
+    });
+
+    // ---------- touch, pen and mouse: drag to pan, pinch to zoom, swipe to turn, double-tap to zoom ----------
+    const pts = new Map<number, { x: number; y: number }>();
+    let drag: { x: number; y: number; tx: number; ty: number; moved: boolean; type: string; onImg: boolean } | null = null;
+    let pinch: { d: number } | null = null;
+    let lastTap = 0, lastX = 0, lastY = 0, lastType = "mouse";
+    const two = () => Array.from(pts.values());
+    view.addEventListener("pointerdown", (e) => {
+      if (e.pointerType === "mouse" && e.button !== 0) return;
+      lastType = e.pointerType;
+      view.setPointerCapture(e.pointerId);
+      pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pts.size === 1) drag = { x: e.clientX, y: e.clientY, tx, ty, moved: false, type: e.pointerType, onImg: e.target === img };
+      else if (pts.size === 2) {
+        const [a, b] = two();
+        pinch = { d: Math.hypot(a.x - b.x, a.y - b.y) };
+        drag = null;
+      }
+    });
+    view.addEventListener("pointermove", (e) => {
+      if (!pts.has(e.pointerId)) return;
+      pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pinch && pts.size === 2) {
+        const [a, b] = two();
+        const d = Math.hypot(a.x - b.x, a.y - b.y);
+        if (pinch.d > 0) zoomAt(s * (d / pinch.d), (a.x + b.x) / 2, (a.y + b.y) / 2, false);
+        pinch.d = d;
+        return;
+      }
+      if (!drag) return;
+      const dx = e.clientX - drag.x;
+      const dy = e.clientY - drag.y;
+      if (Math.abs(dx) + Math.abs(dy) > 6) drag.moved = true;
+      if (s > 1.01 && drag.moved) {
+        tx = drag.tx + dx;
+        ty = drag.ty + dy;
+        bounds();
+        apply(false);
+        view.classList.add("is-dragging");
+      }
+    });
+    const end = (e: PointerEvent) => {
+      if (!pts.has(e.pointerId)) return;
+      pts.delete(e.pointerId);
+      view.classList.remove("is-dragging");
+      if (pinch) {
+        if (pts.size < 2) {
+          pinch = null;
+          if (s < 1.05) zoomAt(1, 0, 0, true);
+        }
+        drag = null;
+        return;
+      }
+      if (!drag || e.type === "pointercancel") { drag = null; return; }
+      const d = drag;
+      drag = null;
+      const dx = e.clientX - d.x;
+      const dy = e.clientY - d.y;
+      if (s <= 1.01 && multi && Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+        showPage(vi + (dx < 0 ? 1 : -1)); // swipe
+        return;
+      }
+      if (d.moved) return;
+      if (d.type !== "mouse") {
+        const now = performance.now();
+        if (now - lastTap < 320 && Math.hypot(e.clientX - lastX, e.clientY - lastY) < 30) {
+          toggleZoom(e.clientX, e.clientY); // double-tap
+          lastTap = 0;
+        } else {
+          lastTap = now;
+          lastX = e.clientX;
+          lastY = e.clientY;
+        }
+      } else if (!d.onImg && s <= 1.01) {
+        closeBox(); // a click on the dark area around the page closes the viewer
+      }
+    };
+    view.addEventListener("pointerup", end);
+    view.addEventListener("pointercancel", end);
+    // The view holds the pointer while a finger or the mouse is down, so the double-click
+    // arrives on the view itself, not on the picture.
+    view.addEventListener("dblclick", (e) => {
+      e.preventDefault();
+      if (lastType !== "mouse") return; // a touch double-tap is handled above, and the browser sends dblclick for it too
+      toggleZoom(e.clientX, e.clientY);
+    });
+    // A trackpad pinch (or Ctrl and the mouse wheel) zooms too.
+    view.addEventListener(
+      "wheel",
+      (e) => {
+        if (!e.ctrlKey) return;
+        e.preventDefault();
+        zoomAt(s * Math.exp(-e.deltaY * 0.01), e.clientX, e.clientY, false);
+      },
+      { passive: false },
+    );
+  });
+</script>

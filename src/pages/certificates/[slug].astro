@@ -2,6 +2,8 @@
 // One page per document, at /certificates/<slug>. This is the address used in the resume.
 import Base from "../../layouts/Base.astro";
 import Icon from "../../components/Icon.astro";
+import DocViewer from "../../components/DocViewer.astro";
+import { imageSize } from "../../data/imageSize.js";
 import { documents, documentTypes } from "../../data/documents.js";
 import { projects } from "../../data/site.js";
 
@@ -22,6 +24,10 @@ const project = d.related?.project ? projects.find((p) => p.slug === d.related.p
 const relatedHref = project ? `/projects/${project.slug}` : d.related?.section;
 const kind = d.photo ? "photo" : d.type === "press" ? "story" : "certificate";
 const fileLabel = d.photo ? "Open the original photo" : "Open the original (PDF)";
+// Every page for the viewer. A single-page document or photo is one page.
+const viewerPages = d.pages
+  ? d.pages.map((p, i) => ({ ...p, alt: `${d.shortTitle}, page ${i + 1} of ${d.pages.length}` }))
+  : [{ src: d.image, alt: d.alt, ...imageSize(d.image) }];
 ---
 <Base
   title={`${d.shortTitle} | Yash Shah`}
@@ -69,11 +75,8 @@ const fileLabel = d.photo ? "Open the original photo" : "Open the original (PDF)
 
       <figure class="doc-figure">
         <img class="cloud" src="/images/grain.webp" alt="" aria-hidden="true" width="720" height="720" />
-        <a class="doc-figure__frame" href={d.image} data-lightbox="doc" data-caption={d.shortTitle} data-full={d.file}>
-          <img src={d.image} alt={d.alt} decoding="async" />
-          <span class="doc-figure__zoom"><Icon name="expand" size={18} />Click to zoom</span>
-        </a>
-        <figcaption>{d.photo ? "Click the photo to see it full size." : `Click the ${kind} to see it full size.`}</figcaption>
+        <DocViewer pages={viewerPages} title={d.shortTitle} frameClass="doc-figure__frame" />
+        <figcaption>{d.photo ? "Click the photo to see it full size." : viewerPages.length > 1 ? "Click a page to see it full size." : `Click the ${kind} to see it full size.`}</figcaption>
       </figure>
     </div>
 
