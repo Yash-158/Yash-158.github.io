@@ -335,6 +335,19 @@ const raw = [
       "I presented our paper Frequency-Family Classification of Marsquakes from Spectrograms with a Hybrid Convolutional and Fourier Neural Operator at ICISHCT 2026, the International Conference on Intelligent, Secured and Human-Centered Technologies. It was organised by the Institute of Advanced Research, Gandhinagar, on 29 and 30 October 2026.",
     related: { section: "/#research", label: "The paper in my published research" },
   },
+  {
+    slug: "coast-scan-lab-report-2025",
+    type: "research",
+    title: "Coast Scan lab validation, Sri Sairam Engineering College (Sediment Analysis Report)",
+    shortTitle: "Coast Scan, lab validation report",
+    issuer: "Department of Civil Engineering, Sri Sairam Engineering College, Chennai",
+    dates: "Dec 2025",
+    when: "Dec 2025",
+    sort: "2025-12-09",
+    description:
+      "A sieve analysis of a Porbandar coast sand sample, carried out in the Civil Engineering Laboratory of Sri Sairam Engineering College and signed and stamped by the head of the department. We used it to check Coast Scan's grain size results against the standard lab method.",
+    related: { project: "coast-scan", label: "Coast Scan, the project it validates" },
+  },
 
   // ------------------------------------------------------------------ Appreciation
   {

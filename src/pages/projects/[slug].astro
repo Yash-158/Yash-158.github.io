@@ -49,7 +49,7 @@ let galleryShown = false;
       <p class="project-hero__lead">{p.lead}</p>
       <div class="project-hero__actions">
         {firstLink && (
-          <a class="btn btn--blue" href={firstLink.href} target="_blank" rel="noopener">{firstLink.label}<Icon name="arrow" size={15} stroke={2.2} /></a>
+          <a class="btn btn--blue" href={firstLink.href} target={/^https?:/.test(firstLink.href) ? "_blank" : undefined} rel={/^https?:/.test(firstLink.href) ? "noopener" : undefined}>{firstLink.label}<Icon name="arrow" size={15} stroke={2.2} /></a>
         )}
         {howId && <a class={`btn ${firstLink ? "btn--line" : "btn--blue"}`} href="#how">How it works</a>}
       </div>
@@ -131,7 +131,7 @@ let galleryShown = false;
               {r.value && <span class="result__value">{r.value}</span>}
               <p>{r.text}</p>
               {r.link && (
-                <a class="circle-link" href={r.link.href} target="_blank" rel="noopener"><span class="circle-link__dot"><Icon name="arrow" size={17} /></span>{r.link.label}</a>
+                <a class="circle-link" href={r.link.href} target={/^https?:/.test(r.link.href) ? "_blank" : undefined} rel={/^https?:/.test(r.link.href) ? "noopener" : undefined}><span class="circle-link__dot"><Icon name="arrow" size={17} /></span>{r.link.label}</a>
               )}
             </div>
           ))}
@@ -188,7 +188,7 @@ let galleryShown = false;
   {(p.links || []).length > 1 && (
     <section class="stack-row" aria-label="Links">
       <p class="label">Links</p>
-      <div class="pill-row">{p.links.map((l) => <a class="pill" href={l.href} target="_blank" rel="noopener">{l.label}</a>)}</div>
+      <div class="pill-row">{p.links.map((l) => <a class="pill" href={l.href} target={/^https?:/.test(l.href) ? "_blank" : undefined} rel={/^https?:/.test(l.href) ? "noopener" : undefined}>{l.label}</a>)}</div>
     </section>
   )}
 

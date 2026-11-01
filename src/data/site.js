@@ -113,7 +113,8 @@ export const thirdPaper = "A third paper is in progress.";
 // Projects. The first four are the big rows on the home page.
 // Every project with `sections` gets its own page at /projects/<slug>.
 // ---------------------------------------------------------------------------
-const LAB_REPORT = "https://drive.google.com/file/d/1046IdlaNWKprkkVmfIpSB3f-iZ1MAdfc/view";
+// The signed lab report is now a certificate page on this site (it replaced a Google Drive link).
+const LAB_REPORT = "/certificates/coast-scan-lab-report-2025";
 
 export const projects = [
   {

@@ -188,7 +188,7 @@ const filters = [
               <span class="circle-link__dot"><Icon name="arrow" size={18} /></span>View project<span class="visually-hidden">: {p.name}</span>
             </a>
             {(p.homeLinks || []).map((l) => (
-              <a class="ul-link" href={l.href} target="_blank" rel="noopener">{l.label}</a>
+              <a class="ul-link" href={l.href} target={/^https?:/.test(l.href) ? "_blank" : undefined} rel={/^https?:/.test(l.href) ? "noopener" : undefined}>{l.label}</a>
             ))}
           </div>
         </div>
